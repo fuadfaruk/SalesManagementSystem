@@ -20,5 +20,12 @@ namespace SalesManagementSystem.Controllers
             var employeeList = _context.Employees.ToList();
             return Ok(employeeList);
         }
+
+        [HttpGet("{empId:int}")]
+        public IActionResult GetEmployeeById(int empId)
+        {
+            var employee = _context.Employees.FirstOrDefault(e => e.emp_id == empId);
+            return employee != null ? Ok(employee) : NotFound();
+        }
     }
 }
