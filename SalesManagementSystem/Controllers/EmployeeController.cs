@@ -1,0 +1,24 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using SalesManagementSystem.Data;
+using SalesManagementSystem.Models;
+
+namespace SalesManagementSystem.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]
+    public class EmployeeController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+        public EmployeeController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        [HttpGet]
+        public IActionResult GetAllEmployee()
+        {
+            var employeeList = _context.Employees.ToList();
+            return Ok(employeeList);
+        }
+    }
+}
