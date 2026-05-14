@@ -44,7 +44,7 @@ namespace SalesManagementSystem.Migrations
 
                     b.HasIndex("mgr_id");
 
-                    b.ToTable("Branches");
+                    b.ToTable("Branches", (string)null);
                 });
 
             modelBuilder.Entity("SalesManagementSystem.Models.Employee", b =>
@@ -83,7 +83,7 @@ namespace SalesManagementSystem.Migrations
 
                     b.HasIndex("super_id");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("SalesManagementSystem.Models.Branch", b =>

@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SalesManagementSystem.Data;
+using SalesManagementSystem.Dtos.BranchDtos;
 using SalesManagementSystem.Dtos.EmployeeDtos;
 using SalesManagementSystem.Models;
 
-// Add Dto for GetById
 // Fix other Dtos after adding brach functionality
-// Add asysc functionality
+// Add async functionality
 // Add repository pattern
 // Add automapper
 
@@ -25,7 +25,7 @@ namespace SalesManagementSystem.Controllers
         public IActionResult GetAllEmployee() // Use Dto
         {
             var employeeList = _context.Employees.ToList();
-            var employeeDtoList = employeeList.Select(e => new GetAllEmployeeDto
+            var employeeDtoList = employeeList.Select(e => new GetAllEmployeeDto // Put this line in a mapper class
             {
                 emp_id = e.emp_id,
                 first_name = e.first_name,
@@ -37,10 +37,34 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet("{empId:int}")]
-        public IActionResult GetEmployeeById(int empId) // Use Dto
+        public IActionResult GetEmployeeById(int empId)
         {
             var employee = _context.Employees.FirstOrDefault(e => e.emp_id == empId); // Put this line in repository class
-            return employee != null ? Ok(employee) : NotFound();
+            if (employee == null) 
+            {
+                return NotFound();
+            }
+            GetByIdEmployeeDto employeeDto = new GetByIdEmployeeDto
+            {
+                emp_id = employee.emp_id,
+                birth_date = employee.birth_date,
+                first_name = employee.first_name,
+                last_name = employee.last_name,
+                salary = employee.salary,
+                sex = employee.sex,
+                super_id = employee.super_id,
+            };
+            if (employee.branch_id != null)
+            {
+                var branch = _context.Branches.FirstOrDefault(b => b.branch_id == employee.branch_id);
+                employeeDto.Branch = new GetByIdShortInfoBranchDto
+                {
+                    branch_id = branch.branch_id,
+                    branch_name = branch.branch_name,
+                    mgr_id = branch.mgr_id
+                };
+            }
+            return Ok(employeeDto);
         }
 
         [HttpPost]

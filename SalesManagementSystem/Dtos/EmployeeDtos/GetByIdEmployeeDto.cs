@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SalesManagementSystem.Dtos.BranchDtos;
+using SalesManagementSystem.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalesManagementSystem.Dtos.EmployeeDtos
@@ -13,8 +15,7 @@ namespace SalesManagementSystem.Dtos.EmployeeDtos
         [Column(TypeName = "decimal(18, 2)")]
         public decimal salary { get; set; }
         public string? sex { get; set; }
-        [ForeignKey("super_id")]
         public int? super_id { get; set; }
-        public int branch_id { get; set; }
+        public GetByIdShortInfoBranchDto? Branch { get; set; }
     }
 }

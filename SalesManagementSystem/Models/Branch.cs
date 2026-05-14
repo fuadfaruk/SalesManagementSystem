@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalesManagementSystem.Models
 {
+    // Change Dtos everytime after changing the model
     public class Branch
     {
         [Key]
