@@ -10,5 +10,6 @@ namespace SalesManagementSystem.Data
         {
         }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<Branch> Branches { get; set; }
     }
 }

@@ -1,7 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SalesManagementSystem.Data;
-using SalesManagementSystem.Dtos;
+using SalesManagementSystem.Dtos.EmployeeDtos;
 using SalesManagementSystem.Models;
+
+// Add Dto for GetById
+// Fix other Dtos after adding brach functionality
+// Add asysc functionality
+// Add repository pattern
+// Add automapper
 
 namespace SalesManagementSystem.Controllers
 {
@@ -16,16 +22,24 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllEmployee()
+        public IActionResult GetAllEmployee() // Use Dto
         {
             var employeeList = _context.Employees.ToList();
-            return Ok(employeeList);
+            var employeeDtoList = employeeList.Select(e => new GetAllEmployeeDto
+            {
+                emp_id = e.emp_id,
+                first_name = e.first_name,
+                last_name = e.last_name,
+                super_id = e.super_id,
+                branch_id = e.branch_id
+            }).ToList();
+            return Ok(employeeDtoList);
         }
 
         [HttpGet("{empId:int}")]
-        public IActionResult GetEmployeeById(int empId)
+        public IActionResult GetEmployeeById(int empId) // Use Dto
         {
-            var employee = _context.Employees.FirstOrDefault(e => e.emp_id == empId);
+            var employee = _context.Employees.FirstOrDefault(e => e.emp_id == empId); // Put this line in repository class
             return employee != null ? Ok(employee) : NotFound();
         }
 
@@ -38,7 +52,9 @@ namespace SalesManagementSystem.Controllers
                 first_name = employeeDto.first_name,
                 last_name = employeeDto.last_name,
                 salary = employeeDto.salary,
-                sex = employeeDto.sex
+                sex = employeeDto.sex,
+                super_id = employeeDto.super_id,
+                branch_id = employeeDto.branch_id
             };
             _context.Employees.Add(employee);
             _context.SaveChanges();
@@ -57,6 +73,9 @@ namespace SalesManagementSystem.Controllers
             employee.first_name = employeeDto.first_name;
             employee.last_name = employeeDto.last_name;
             employee.salary = employeeDto.salary;
+            employee.sex = employeeDto.sex;
+            employee.super_id = employeeDto.super_id;
+            employee.branch_id = employeeDto.branch_id;
 
             _context.SaveChanges();
             return CreatedAtAction(nameof(UpdateEmployee), new { empId = employee.emp_id }, employee);

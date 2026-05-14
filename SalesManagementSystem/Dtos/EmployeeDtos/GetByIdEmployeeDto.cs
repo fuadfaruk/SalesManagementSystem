@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SalesManagementSystem.Models
+namespace SalesManagementSystem.Dtos.EmployeeDtos
 {
-    public class Employee
+    public class GetByIdEmployeeDto
     {
         [Key]
         public int emp_id { get; set; }
@@ -13,11 +13,8 @@ namespace SalesManagementSystem.Models
         [Column(TypeName = "decimal(18, 2)")]
         public decimal salary { get; set; }
         public string? sex { get; set; }
-        public int? super_id { get; set; } // There is better way to name this in EF conventions, but this is for learing how to use ForeignKey attribute ;)
-        [ForeignKey(nameof(super_id))]
-        public Employee? Supervisor { get; set; }
-        public int? branch_id { get; set; }
-        [ForeignKey(nameof(branch_id))]
-        public Branch? Branch { get; set; }
+        [ForeignKey("super_id")]
+        public int? super_id { get; set; }
+        public int branch_id { get; set; }
     }
 }

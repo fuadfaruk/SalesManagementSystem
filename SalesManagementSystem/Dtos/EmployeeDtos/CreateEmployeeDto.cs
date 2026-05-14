@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SalesManagementSystem.Dtos
+namespace SalesManagementSystem.Dtos.EmployeeDtos
 {
-    public class UpdateEmployeeDto
+    public class CreateEmployeeDto
     {
         public DateOnly birth_date { get; set; }
         public required string first_name { get; set; }
@@ -10,5 +10,7 @@ namespace SalesManagementSystem.Dtos
         [Column(TypeName = "decimal(18, 2)")]
         public decimal salary { get; set; }
         public string? sex { get; set; }
+        public int? super_id { get; set; }
+        public int? branch_id { get; set; }
     }
 }
