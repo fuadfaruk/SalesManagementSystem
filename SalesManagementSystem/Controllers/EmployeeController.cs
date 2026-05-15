@@ -25,7 +25,7 @@ namespace SalesManagementSystem.Controllers
         public IActionResult GetAllEmployee() // Use Dto
         {
             var employeeList = _context.Employees.ToList();
-            var employeeDtoList = employeeList.Select(e => new GetAllEmployeeDto // Put this line in a mapper class
+            List<GetAllEmployeeDto> employeeDtos = employeeList.Select(e => new GetAllEmployeeDto // Put this line in a mapper class
             {
                 emp_id = e.emp_id,
                 first_name = e.first_name,
@@ -33,7 +33,7 @@ namespace SalesManagementSystem.Controllers
                 super_id = e.super_id,
                 branch_id = e.branch_id
             }).ToList();
-            return Ok(employeeDtoList);
+            return Ok(employeeDtos);
         }
 
         [HttpGet("{empId:int}")]
