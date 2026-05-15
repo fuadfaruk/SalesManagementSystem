@@ -44,7 +44,7 @@ namespace SalesManagementSystem.Controllers
             {
                 return NotFound();
             }
-            GetByIdEmployeeDto employeeDto = new GetByIdEmployeeDto
+            GetByIdDetailedInfoEmployeeDto employeeDto = new GetByIdDetailedInfoEmployeeDto
             {
                 emp_id = employee.emp_id,
                 birth_date = employee.birth_date,
@@ -57,12 +57,15 @@ namespace SalesManagementSystem.Controllers
             if (employee.branch_id != null)
             {
                 var branch = _context.Branches.FirstOrDefault(b => b.branch_id == employee.branch_id);
-                employeeDto.Branch = new GetByIdShortInfoBranchDto
+                if (branch != null)
                 {
-                    branch_id = branch.branch_id,
-                    branch_name = branch.branch_name,
-                    mgr_id = branch.mgr_id
-                };
+                    employeeDto.Branch = new GetByIdShortInfoBranchDto
+                    {
+                        branch_id = branch.branch_id,
+                        branch_name = branch.branch_name,
+                        mgr_id = branch.mgr_id
+                    };
+                }
             }
             return Ok(employeeDto);
         }

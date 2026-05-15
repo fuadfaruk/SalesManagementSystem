@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalesManagementSystem.Dtos.EmployeeDtos
 {
-    public class GetByIdEmployeeDto
+    public class GetByIdDetailedInfoEmployeeDto
     {
         [Key]
         public int emp_id { get; set; }
