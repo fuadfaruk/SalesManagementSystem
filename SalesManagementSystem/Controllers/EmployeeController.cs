@@ -2,11 +2,11 @@
 using SalesManagementSystem.Data;
 using SalesManagementSystem.Dtos.BranchDtos;
 using SalesManagementSystem.Dtos.EmployeeDtos;
+using SalesManagementSystem.Interfaces;
 using SalesManagementSystem.Models;
 
-// Fix other Dtos after adding brach functionality
-// Add async functionality
 // Add repository pattern
+// Add async functionality
 // Add automapper
 
 namespace SalesManagementSystem.Controllers
@@ -16,15 +16,17 @@ namespace SalesManagementSystem.Controllers
     public class EmployeeController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public EmployeeController(ApplicationDbContext context)
+        private readonly IEmployeeRepository _employeeRepository;
+        public EmployeeController(IEmployeeRepository employeeRepository, ApplicationDbContext context)
         {
             _context = context;
+            _employeeRepository = employeeRepository;
         }
 
         [HttpGet]
-        public IActionResult GetAllEmployee() // Use Dto
+        public IActionResult GetAllEmployee()
         {
-            var employeeList = _context.Employees.ToList();
+            var employeeList = _employeeRepository.GetAllEmployees();
             List<GetAllEmployeeDto> employeeDtos = employeeList.Select(e => new GetAllEmployeeDto // Put this line in a mapper class
             {
                 emp_id = e.emp_id,
@@ -39,7 +41,7 @@ namespace SalesManagementSystem.Controllers
         [HttpGet("{empId:int}")]
         public IActionResult GetEmployeeById(int empId)
         {
-            var employee = _context.Employees.FirstOrDefault(e => e.emp_id == empId); // Put this line in repository class
+            var employee = _employeeRepository.GetEmployeeById(empId);
             if (employee == null) 
             {
                 return NotFound();
@@ -83,15 +85,14 @@ namespace SalesManagementSystem.Controllers
                 super_id = employeeDto.super_id,
                 branch_id = employeeDto.branch_id
             };
-            _context.Employees.Add(employee);
-            _context.SaveChanges();
+            _employeeRepository.AddEmployee(employee);
             return CreatedAtAction(nameof(GetEmployeeById), new { empId = employee.emp_id }, employee);
         }
 
         [HttpPut("{empId:int}")]
         public IActionResult UpdateEmployee(int empId, UpdateEmployeeDto employeeDto)
         {
-            var employee = _context.Employees.FirstOrDefault(e => e.emp_id == empId);
+            var employee = _employeeRepository.GetEmployeeById(empId);
             if (employee == null)
             {
                 return NotFound();
@@ -104,20 +105,23 @@ namespace SalesManagementSystem.Controllers
             employee.super_id = employeeDto.super_id;
             employee.branch_id = employeeDto.branch_id;
 
-            _context.SaveChanges();
+            // Add checkup for the existance of branch_id
+
+            _employeeRepository.UpdateEmployee(employee);
             return CreatedAtAction(nameof(UpdateEmployee), new { empId = employee.emp_id }, employee);
         }
 
         [HttpDelete("{empId:int}")]
         public IActionResult DeleteEmployee(int empId)
         {
-            var employee = _context.Employees.FirstOrDefault(e => e.emp_id == empId);
+            // Deleting a employee that is a manager of a branch throws an error, fix it!
+            var employee = _employeeRepository.GetEmployeeById(empId);
             if (employee == null)
             {
-                return NotFound();
+                return NotFound("ID does not exists!");
             }
-            _context.Employees.Remove(employee);
-            _context.SaveChanges();
+
+            _employeeRepository.DeleteEmployee(employee);
             return NoContent();
         }
     }

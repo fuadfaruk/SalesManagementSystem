@@ -11,6 +11,6 @@ namespace SalesManagementSystem.Dtos.EmployeeDtos
         public decimal salary { get; set; }
         public string? sex { get; set; }
         public int? super_id { get; set; }
-        public required int branch_id { get; set; }
+        public int? branch_id { get; set; }
     }
 }
