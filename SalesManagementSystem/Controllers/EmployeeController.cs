@@ -5,6 +5,7 @@ using SalesManagementSystem.Dtos.EmployeeDtos;
 using SalesManagementSystem.Interfaces;
 using SalesManagementSystem.Models;
 
+// Add supervisor validation check
 // Add repository pattern
 // Add async functionality
 // Add automapper
@@ -15,25 +16,25 @@ namespace SalesManagementSystem.Controllers
     [Route("[controller]")]
     public class EmployeeController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IEmployeeRepository _employeeRepository;
-        public EmployeeController(IEmployeeRepository employeeRepository, ApplicationDbContext context)
+        private readonly IBranchRepository _branchRepository;
+        public EmployeeController(IEmployeeRepository employeeRepository, IBranchRepository branchRepository)
         {
-            _context = context;
             _employeeRepository = employeeRepository;
+            _branchRepository = branchRepository;
         }
 
         [HttpGet]
         public IActionResult GetAllEmployee()
         {
-            var employeeList = _employeeRepository.GetAllEmployees();
+            var employeeList = _employeeRepository.GetAllEmployee();
             List<GetAllEmployeeDto> employeeDtos = employeeList.Select(e => new GetAllEmployeeDto // Put this line in a mapper class
             {
-                emp_id = e.emp_id,
-                first_name = e.first_name,
-                last_name = e.last_name,
-                super_id = e.super_id,
-                branch_id = e.branch_id
+                emp_id = e.EmployeeId,
+                first_name = e.FirstName,
+                last_name = e.LastName,
+                super_id = e.SupervisorId,
+                branch_id = e.BranchId
             }).ToList();
             return Ok(employeeDtos);
         }
@@ -48,24 +49,24 @@ namespace SalesManagementSystem.Controllers
             }
             GetByIdDetailedInfoEmployeeDto employeeDto = new GetByIdDetailedInfoEmployeeDto
             {
-                emp_id = employee.emp_id,
-                birth_date = employee.birth_date,
-                first_name = employee.first_name,
-                last_name = employee.last_name,
-                salary = employee.salary,
-                sex = employee.sex,
-                super_id = employee.super_id,
+                emp_id = employee.EmployeeId,
+                birth_date = employee.BirthDay,
+                first_name = employee.FirstName,
+                last_name = employee.LastName,
+                salary = employee.Salary,
+                sex = employee.Sex,
+                super_id = employee.SupervisorId,
             };
-            if (employee.branch_id != null)
+            if (employee.BranchId != null)
             {
-                var branch = _context.Branches.FirstOrDefault(b => b.branch_id == employee.branch_id);
+                var branch = _branchRepository.GetBranchById(employee.BranchId.Value);
                 if (branch != null)
                 {
                     employeeDto.Branch = new GetByIdShortInfoBranchDto
                     {
-                        branch_id = branch.branch_id,
-                        branch_name = branch.branch_name,
-                        mgr_id = branch.mgr_id
+                        branch_id = branch.BranchId,
+                        branch_name = branch.BranchName,
+                        mgr_id = branch.ManagerId
                     };
                 }
             }
@@ -77,16 +78,16 @@ namespace SalesManagementSystem.Controllers
         {
             var employee = new Employee
             {
-                birth_date = employeeDto.birth_date,
-                first_name = employeeDto.first_name,
-                last_name = employeeDto.last_name,
-                salary = employeeDto.salary,
-                sex = employeeDto.sex,
-                super_id = employeeDto.super_id,
-                branch_id = employeeDto.branch_id
+                BirthDay = employeeDto.birth_date,
+                FirstName = employeeDto.first_name,
+                LastName = employeeDto.last_name,
+                Salary = employeeDto.salary,
+                Sex = employeeDto.sex,
+                SupervisorId = employeeDto.super_id,
+                BranchId = employeeDto.branch_id
             };
             _employeeRepository.AddEmployee(employee);
-            return CreatedAtAction(nameof(GetEmployeeById), new { empId = employee.emp_id }, employee);
+            return CreatedAtAction(nameof(GetEmployeeById), new { empId = employee.EmployeeId }, employee);
         }
 
         [HttpPut("{empId:int}")]
@@ -95,30 +96,44 @@ namespace SalesManagementSystem.Controllers
             var employee = _employeeRepository.GetEmployeeById(empId);
             if (employee == null)
             {
-                return NotFound();
+                return NotFound("Employee ID does not exist!");
             }
-            employee.birth_date = employeeDto.birth_date;
-            employee.first_name = employeeDto.first_name;
-            employee.last_name = employeeDto.last_name;
-            employee.salary = employeeDto.salary;
-            employee.sex = employeeDto.sex;
-            employee.super_id = employeeDto.super_id;
-            employee.branch_id = employeeDto.branch_id;
+            if(employeeDto.branch_id != null && employeeDto.branch_id != employee.BranchId)
+            {
+                var branch = _branchRepository.GetBranchById(employeeDto.branch_id.Value);
+                if (branch == null)
+                {
+                    return NotFound("Branch ID does not exist!");
+                }
+            }
 
-            // Add checkup for the existance of branch_id
+            employee.BirthDay = employeeDto.birth_date;
+            employee.FirstName = employeeDto.first_name;
+            employee.LastName = employeeDto.last_name;
+            employee.Salary = employeeDto.salary;
+            employee.Sex = employeeDto.sex;
+            employee.SupervisorId = employeeDto.super_id;
+            employee.BranchId = employeeDto.branch_id;
 
             _employeeRepository.UpdateEmployee(employee);
-            return CreatedAtAction(nameof(UpdateEmployee), new { empId = employee.emp_id }, employee);
+            return CreatedAtAction(nameof(UpdateEmployee), new { empId = employee.EmployeeId }, employee);
         }
 
         [HttpDelete("{empId:int}")]
         public IActionResult DeleteEmployee(int empId)
         {
-            // Deleting a employee that is a manager of a branch throws an error, fix it!
             var employee = _employeeRepository.GetEmployeeById(empId);
             if (employee == null)
             {
-                return NotFound("ID does not exists!");
+                return NotFound("Employee ID does not exist!");
+            }
+            if (employee.BranchId != null)
+            {
+                var branch = _branchRepository.GetBranchById(employee.BranchId.Value);
+                if (branch != null)
+                {
+                    return BadRequest("Cannot delete employee because they are a manager of a branch. Please assign another manager to the branch before deleting this employee.");
+                }
             }
 
             _employeeRepository.DeleteEmployee(employee);

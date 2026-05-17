@@ -6,18 +6,16 @@ namespace SalesManagementSystem.Models
     public class Employee
     {
         [Key]
-        public int emp_id { get; set; }
-        public DateOnly birth_date { get; set; }
-        public required string first_name { get; set; }
-        public string? last_name { get; set; }
+        public int EmployeeId { get; set; }
+        public DateOnly BirthDay { get; set; }
+        public required string FirstName { get; set; }
+        public string? LastName { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
-        public decimal salary { get; set; }
-        public string? sex { get; set; }
-        public int? super_id { get; set; } // There is better way to name this in EF conventions, but this is for learing how to use ForeignKey attribute ;)
-        [ForeignKey(nameof(super_id))]
+        public decimal Salary { get; set; }
+        public string? Sex { get; set; }
+        public int? SupervisorId { get; set; } // There is better way to name this in EF conventions, but this is for learing how to use ForeignKey attribute ;)
         public Employee? Supervisor { get; set; }
-        public int? branch_id { get; set; }
-        [ForeignKey(nameof(branch_id))]
+        public int? BranchId { get; set; }
         public Branch? Branch { get; set; }
     }
 }
