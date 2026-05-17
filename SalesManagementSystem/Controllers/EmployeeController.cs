@@ -5,10 +5,8 @@ using SalesManagementSystem.Dtos.EmployeeDtos;
 using SalesManagementSystem.Interfaces;
 using SalesManagementSystem.Models;
 
-// Add supervisor validation check
-// Add repository pattern
 // Add async functionality
-// Add automapper
+// Add mapper
 
 namespace SalesManagementSystem.Controllers
 {
@@ -36,6 +34,7 @@ namespace SalesManagementSystem.Controllers
                 SupervisorId = e.SupervisorId,
                 BranchId = e.BranchId
             }).ToList();
+
             return Ok(employeeDtos);
         }
 
@@ -76,6 +75,22 @@ namespace SalesManagementSystem.Controllers
         [HttpPost]
         public IActionResult AddEmployee(CreateEmployeeDto employeeDto)
         {
+            if (employeeDto.SuperId != null)
+            {
+                var supervisor = _employeeRepository.GetEmployeeById(employeeDto.SuperId.Value);
+                if(supervisor == null)
+                {
+                    return NotFound("Supervisor ID does not exist!");
+                }
+            }
+            if(employeeDto.BranchId != null)
+            {
+                var branch = _branchRepository.GetBranchById(employeeDto.BranchId.Value);
+                if (branch == null)
+                {
+                    return NotFound("Branch ID does not exist!");
+                }
+            }
             var employee = new Employee
             {
                 BirthDay = employeeDto.BirthDate,
@@ -87,7 +102,8 @@ namespace SalesManagementSystem.Controllers
                 BranchId = employeeDto.BranchId
             };
             _employeeRepository.AddEmployee(employee);
-            return CreatedAtAction(nameof(GetEmployeeById), new { empId = employee.EmployeeId }, employee);
+
+            return Ok(employee);
         }
 
         [HttpPut("{empId:int}")]
@@ -106,6 +122,14 @@ namespace SalesManagementSystem.Controllers
                     return NotFound("Branch ID does not exist!");
                 }
             }
+            if(employeeDto.SuperId != null && employeeDto.SuperId != employee.SupervisorId)
+            {
+                var supervisor = _employeeRepository.GetEmployeeById(employeeDto.SuperId.Value);
+                if (supervisor == null)
+                {
+                    return NotFound("Supervisor ID does not exist!");
+                }
+            }
 
             employee.BirthDay = employeeDto.BirthDate;
             employee.FirstName = employeeDto.FirstName;
@@ -116,7 +140,8 @@ namespace SalesManagementSystem.Controllers
             employee.BranchId = employeeDto.BranchId;
 
             _employeeRepository.UpdateEmployee(employee);
-            return CreatedAtAction(nameof(UpdateEmployee), new { empId = employee.EmployeeId }, employee);
+
+            return Ok(employee);
         }
 
         [HttpDelete("{empId:int}")]
@@ -137,6 +162,7 @@ namespace SalesManagementSystem.Controllers
             }
 
             _employeeRepository.DeleteEmployee(employee);
+
             return NoContent();
         }
     }

@@ -1,9 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using SalesManagementSystem.Models;
 
-namespace SalesManagementSystem.Models
+namespace SalesManagementSystem.Dtos.ClientDtos
 {
-    public class Client
+    public class GetByIdClientDto
     {
         public int ClientId { get; set; }
         public required string ClientName { get; set; }

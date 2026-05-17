@@ -13,6 +13,6 @@ namespace SalesManagementSystem.Models
         [ForeignKey(nameof(EmployeeId))]
         public Employee Employee { get; set; } = null!;
         [ForeignKey(nameof(ClientId))]
-        public Client Client { get; set; } = null!;
+        public Client? Client { get; set; } = null!;
     }
 }

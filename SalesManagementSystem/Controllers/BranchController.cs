@@ -80,7 +80,7 @@ namespace SalesManagementSystem.Controllers
 
             _branchRepository.AddBranch(branch);
 
-            return Ok();
+            return Ok(branch);
         }
 
         [HttpPut("{branchId:int}")]
@@ -97,7 +97,7 @@ namespace SalesManagementSystem.Controllers
 
             _branchRepository.UpdateBranch(branch);
 
-            return Ok();
+            return Ok(branch);
         }
 
         [HttpDelete("{branchId:int}")]
@@ -110,7 +110,7 @@ namespace SalesManagementSystem.Controllers
             }
             _branchRepository.DeleteBranch(branch);
 
-            return Ok();
+            return NoContent();
         }
     }
 }
