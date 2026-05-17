@@ -2,8 +2,8 @@
 {
     public class UpdateBranchDto
     {
-        public required string branch_name { get; set; }
-        public int? mgr_id { get; set; }
-        public DateOnly mgr_start_date { get; set; }
+        public required string BranchName { get; set; }
+        public int? ManagerId { get; set; }
+        public DateOnly ManagerStartDate { get; set; }
     }
 }

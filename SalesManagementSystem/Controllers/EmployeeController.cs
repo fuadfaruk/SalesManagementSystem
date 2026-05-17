@@ -30,11 +30,11 @@ namespace SalesManagementSystem.Controllers
             var employeeList = _employeeRepository.GetAllEmployee();
             List<GetAllEmployeeDto> employeeDtos = employeeList.Select(e => new GetAllEmployeeDto // Put this line in a mapper class
             {
-                emp_id = e.EmployeeId,
-                first_name = e.FirstName,
-                last_name = e.LastName,
-                super_id = e.SupervisorId,
-                branch_id = e.BranchId
+                EmployeeId = e.EmployeeId,
+                FirstName = e.FirstName,
+                LastName = e.LastName,
+                SupervisorId = e.SupervisorId,
+                BranchId = e.BranchId
             }).ToList();
             return Ok(employeeDtos);
         }
@@ -49,13 +49,13 @@ namespace SalesManagementSystem.Controllers
             }
             GetByIdDetailedInfoEmployeeDto employeeDto = new GetByIdDetailedInfoEmployeeDto
             {
-                emp_id = employee.EmployeeId,
-                birth_date = employee.BirthDay,
-                first_name = employee.FirstName,
-                last_name = employee.LastName,
-                salary = employee.Salary,
-                sex = employee.Sex,
-                super_id = employee.SupervisorId,
+                EmployeeId = employee.EmployeeId,
+                BirthDate = employee.BirthDay,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                Salary = employee.Salary,
+                Sex = employee.Sex,
+                SuperId = employee.SupervisorId,
             };
             if (employee.BranchId != null)
             {
@@ -64,9 +64,9 @@ namespace SalesManagementSystem.Controllers
                 {
                     employeeDto.Branch = new GetByIdShortInfoBranchDto
                     {
-                        branch_id = branch.BranchId,
-                        branch_name = branch.BranchName,
-                        mgr_id = branch.ManagerId
+                        BranchId = branch.BranchId,
+                        BranchName = branch.BranchName,
+                        MangerId = branch.ManagerId
                     };
                 }
             }
@@ -78,13 +78,13 @@ namespace SalesManagementSystem.Controllers
         {
             var employee = new Employee
             {
-                BirthDay = employeeDto.birth_date,
-                FirstName = employeeDto.first_name,
-                LastName = employeeDto.last_name,
-                Salary = employeeDto.salary,
-                Sex = employeeDto.sex,
-                SupervisorId = employeeDto.super_id,
-                BranchId = employeeDto.branch_id
+                BirthDay = employeeDto.BirthDate,
+                FirstName = employeeDto.FirstName,
+                LastName = employeeDto.LastName,
+                Salary = employeeDto.Salary,
+                Sex = employeeDto.Sex,
+                SupervisorId = employeeDto.SuperId,
+                BranchId = employeeDto.BranchId
             };
             _employeeRepository.AddEmployee(employee);
             return CreatedAtAction(nameof(GetEmployeeById), new { empId = employee.EmployeeId }, employee);
@@ -98,22 +98,22 @@ namespace SalesManagementSystem.Controllers
             {
                 return NotFound("Employee ID does not exist!");
             }
-            if(employeeDto.branch_id != null && employeeDto.branch_id != employee.BranchId)
+            if(employeeDto.BranchId != null && employeeDto.BranchId != employee.BranchId)
             {
-                var branch = _branchRepository.GetBranchById(employeeDto.branch_id.Value);
+                var branch = _branchRepository.GetBranchById(employeeDto.BranchId.Value);
                 if (branch == null)
                 {
                     return NotFound("Branch ID does not exist!");
                 }
             }
 
-            employee.BirthDay = employeeDto.birth_date;
-            employee.FirstName = employeeDto.first_name;
-            employee.LastName = employeeDto.last_name;
-            employee.Salary = employeeDto.salary;
-            employee.Sex = employeeDto.sex;
-            employee.SupervisorId = employeeDto.super_id;
-            employee.BranchId = employeeDto.branch_id;
+            employee.BirthDay = employeeDto.BirthDate;
+            employee.FirstName = employeeDto.FirstName;
+            employee.LastName = employeeDto.LastName;
+            employee.Salary = employeeDto.Salary;
+            employee.Sex = employeeDto.Sex;
+            employee.SupervisorId = employeeDto.SuperId;
+            employee.BranchId = employeeDto.BranchId;
 
             _employeeRepository.UpdateEmployee(employee);
             return CreatedAtAction(nameof(UpdateEmployee), new { empId = employee.EmployeeId }, employee);

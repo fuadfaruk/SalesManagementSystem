@@ -4,13 +4,13 @@ namespace SalesManagementSystem.Dtos.EmployeeDtos
 {
     public class CreateEmployeeDto
     {
-        public DateOnly birth_date { get; set; }
-        public required string first_name { get; set; }
-        public string? last_name { get; set; }
+        public DateOnly BirthDate { get; set; }
+        public required string FirstName { get; set; }
+        public string? LastName { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
-        public decimal salary { get; set; }
-        public string? sex { get; set; }
-        public int? super_id { get; set; }
-        public int? branch_id { get; set; }
+        public decimal Salary { get; set; }
+        public string? Sex { get; set; }
+        public int? SuperId { get; set; }
+        public int? BranchId { get; set; }
     }
 }

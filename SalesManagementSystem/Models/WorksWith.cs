@@ -8,6 +8,7 @@ namespace SalesManagementSystem.Models
     {
         public int EmployeeId { get; set; }
         public int ClientId { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
         public decimal TotalSales { get; set; }
         [ForeignKey(nameof(EmployeeId))]
         public Employee Employee { get; set; } = null!;

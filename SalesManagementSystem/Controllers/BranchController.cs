@@ -25,10 +25,10 @@ namespace SalesManagementSystem.Controllers
             var branchList = _branchRepository.GetAllBranch();
             List<GetBranchDto> branchDtos = branchList.Select(b => new GetBranchDto
             {
-                branch_id = b.BranchId,
-                branch_name = b.BranchName,
-                mgr_id = b.ManagerId,
-                mgr_start_date = b.ManagerStartDate
+                BranchId = b.BranchId,
+                BranchName = b.BranchName,
+                ManagerId = b.ManagerId,
+                ManagerStartDate = b.ManagerStartDate
             }).ToList();
             return Ok(branchDtos);
         }
@@ -43,18 +43,18 @@ namespace SalesManagementSystem.Controllers
             }
             GetByIdDetailedInfoBranchDto branchDto = new GetByIdDetailedInfoBranchDto
             {
-                branch_id = branch.BranchId,
-                branch_name = branch.BranchName,
-                mgr_start_date = branch.ManagerStartDate
+                BranchId = branch.BranchId,
+                BranchName = branch.BranchName,
+                ManagerStartDate = branch.ManagerStartDate
             };
             if (branch.ManagerId != null)
             {
                 var manager = _employeeRepository.GetEmployeeById(branch.ManagerId.Value);
                 branchDto.Manager = new GetByIdShortInfoEmployee
                 {
-                    emp_id = manager.EmployeeId,
-                    first_name = manager.FirstName,
-                    last_name = manager.LastName,
+                    EmployeeId = manager.EmployeeId,
+                    FirstName = manager.FirstName,
+                    LastName = manager.LastName,
                 };
             }
             return Ok(branchDto);
@@ -63,9 +63,9 @@ namespace SalesManagementSystem.Controllers
         [HttpPost]
         public IActionResult CreateBranch(CreateBranchDto createBranchDto)
         {
-            if(createBranchDto.mgr_id != null)
+            if(createBranchDto.ManagerId != null)
             {
-                var manager = _employeeRepository.GetEmployeeById(createBranchDto.mgr_id.Value);
+                var manager = _employeeRepository.GetEmployeeById(createBranchDto.ManagerId.Value);
                 if (manager == null)
                 {
                     return BadRequest("Manager with the specified ID does not exist.");
@@ -73,9 +73,9 @@ namespace SalesManagementSystem.Controllers
             }
             var branch = new Branch
             {
-                BranchName = createBranchDto.branch_name,
-                ManagerId = createBranchDto.mgr_id,
-                ManagerStartDate = createBranchDto.mgr_start_date
+                BranchName = createBranchDto.BranchName,
+                ManagerId = createBranchDto.ManagerId,
+                ManagerStartDate = createBranchDto.ManagerStartDate
             };
 
             _branchRepository.AddBranch(branch);
@@ -91,9 +91,9 @@ namespace SalesManagementSystem.Controllers
             {
                 return NotFound();
             }
-            branch.BranchName = updateBranchDto.branch_name;
-            branch.ManagerId = updateBranchDto.mgr_id;
-            branch.ManagerStartDate = updateBranchDto.mgr_start_date;
+            branch.BranchName = updateBranchDto.BranchName;
+            branch.ManagerId = updateBranchDto.ManagerId;
+            branch.ManagerStartDate = updateBranchDto.ManagerStartDate;
 
             _branchRepository.UpdateBranch(branch);
 

@@ -5,8 +5,8 @@ namespace SalesManagementSystem.Dtos.EmployeeDtos
 {
     public class GetByIdShortInfoEmployee
     {
-        public int emp_id { get; set; }
-        public required string first_name { get; set; }
-        public string? last_name { get; set; }
+        public int EmployeeId { get; set; }
+        public required string FirstName { get; set; }
+        public string? LastName { get; set; }
     }
 }

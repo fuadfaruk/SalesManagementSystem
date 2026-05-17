@@ -5,12 +5,11 @@ namespace SalesManagementSystem.Dtos.EmployeeDtos
 {
     public class GetAllEmployeeDto
     {
-        [Key]
-        public int emp_id { get; set; }
-        public required string first_name { get; set; }
-        public string? last_name { get; set; }
+        public int EmployeeId { get; set; }
+        public required string FirstName { get; set; }
+        public string? LastName { get; set; }
         [ForeignKey("super_id")]
-        public int? super_id { get; set; }
-        public int? branch_id { get; set; }
+        public int? SupervisorId { get; set; }
+        public int? BranchId { get; set; }
     }
 }

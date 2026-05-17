@@ -10,6 +10,6 @@ namespace SalesManagementSystem.Models
         public required string BranchName { get; set; }
         public int? ManagerId { get; set; }
         public DateOnly ManagerStartDate { get; set; }
-        public Employee Manager { get; set; } = null!;
+        public Employee? Manager { get; set; }
     }
 }

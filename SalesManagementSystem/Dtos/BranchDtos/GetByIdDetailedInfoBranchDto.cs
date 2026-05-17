@@ -7,10 +7,9 @@ namespace SalesManagementSystem.Dtos.BranchDtos
 {
     public class GetByIdDetailedInfoBranchDto
     {
-        [Key]
-        public int branch_id { get; set; }
-        public required string branch_name { get; set; }
-        public GetByIdShortInfoEmployee? Manager { get; set; } = null;
-        public DateOnly mgr_start_date { get; set; }
+        public int BranchId { get; set; }
+        public required string BranchName { get; set; }
+        public GetByIdShortInfoEmployee? Manager { get; set; }
+        public DateOnly ManagerStartDate { get; set; }
     }
 }
