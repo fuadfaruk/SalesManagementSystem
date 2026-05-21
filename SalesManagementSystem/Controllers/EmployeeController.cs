@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SalesManagementSystem.Data;
 using SalesManagementSystem.Dtos.BranchDtos;
 using SalesManagementSystem.Dtos.EmployeeDtos;
 using SalesManagementSystem.Interfaces;
-using SalesManagementSystem.Models;
+using SalesManagementSystem.Mapper;
 
 // Add async functionality
-// Add mapper
 
 namespace SalesManagementSystem.Controllers
 {
@@ -26,14 +24,7 @@ namespace SalesManagementSystem.Controllers
         public IActionResult GetAllEmployee()
         {
             var employeeList = _employeeRepository.GetAllEmployee();
-            List<GetAllEmployeeDto> employeeDtos = employeeList.Select(e => new GetAllEmployeeDto // Put this line in a mapper class
-            {
-                EmployeeId = e.EmployeeId,
-                FirstName = e.FirstName,
-                LastName = e.LastName,
-                SupervisorId = e.SupervisorId,
-                BranchId = e.BranchId
-            }).ToList();
+            List<GetAllEmployeeDto> employeeDtos = employeeList.Select(s => s.ToGetAllEmployeeDto()).ToList();
 
             return Ok(employeeDtos);
         }
@@ -46,16 +37,7 @@ namespace SalesManagementSystem.Controllers
             {
                 return NotFound();
             }
-            GetByIdDetailedInfoEmployeeDto employeeDto = new GetByIdDetailedInfoEmployeeDto
-            {
-                EmployeeId = employee.EmployeeId,
-                BirthDate = employee.BirthDay,
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                Salary = employee.Salary,
-                Sex = employee.Sex,
-                SuperId = employee.SupervisorId,
-            };
+            GetByIdDetailedInfoEmployeeDto employeeDto = employee.ToGetByIdDetailedInfoEmployeeDto();
             if (employee.BranchId != null)
             {
                 var branch = _branchRepository.GetBranchById(employee.BranchId.Value);
@@ -91,16 +73,7 @@ namespace SalesManagementSystem.Controllers
                     return NotFound("Branch ID does not exist!");
                 }
             }
-            var employee = new Employee
-            {
-                BirthDay = employeeDto.BirthDate,
-                FirstName = employeeDto.FirstName,
-                LastName = employeeDto.LastName,
-                Salary = employeeDto.Salary,
-                Sex = employeeDto.Sex,
-                SupervisorId = employeeDto.SuperId,
-                BranchId = employeeDto.BranchId
-            };
+            var employee = employeeDto.ToEmployee();
             _employeeRepository.AddEmployee(employee);
 
             return Ok(employee);
@@ -131,13 +104,7 @@ namespace SalesManagementSystem.Controllers
                 }
             }
 
-            employee.BirthDay = employeeDto.BirthDate;
-            employee.FirstName = employeeDto.FirstName;
-            employee.LastName = employeeDto.LastName;
-            employee.Salary = employeeDto.Salary;
-            employee.Sex = employeeDto.Sex;
-            employee.SupervisorId = employeeDto.SuperId;
-            employee.BranchId = employeeDto.BranchId;
+            employee.ToEmployee(employeeDto);
 
             _employeeRepository.UpdateEmployee(employee);
 
