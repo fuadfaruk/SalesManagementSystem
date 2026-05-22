@@ -1,0 +1,48 @@
+﻿using SalesManagementSystem.Dtos.BranchDtos;
+using SalesManagementSystem.Models;
+
+namespace SalesManagementSystem.Mapper
+{
+    public static class BranchMapper
+    {
+        public static GetBranchDto ToGetBranchDto(this Branch branch)
+        {
+            return new GetBranchDto
+            {
+                BranchId = branch.BranchId,
+                BranchName = branch.BranchName,
+                ManagerId = branch.ManagerId,
+                ManagerStartDate = branch.ManagerStartDate
+            };
+        }
+
+        public static GetByIdDetailedInfoBranchDto ToGetByIdDetailedInfoBranchDto(this Branch branch)
+        {
+            return new GetByIdDetailedInfoBranchDto
+            {
+                BranchId = branch.BranchId,
+                BranchName = branch.BranchName,
+                ManagerStartDate = branch.ManagerStartDate
+            };
+        }
+
+        public static Branch ToBranchFromCreateBranchDto(this CreateBranchDto createBranchDto)
+        {
+            return new Branch
+            {
+                BranchName = createBranchDto.BranchName,
+                ManagerId = createBranchDto.ManagerId,
+                ManagerStartDate = createBranchDto.ManagerStartDate
+            };
+        }
+
+        public static void ToBranchFromUpdateBranchDto(this Branch branch, UpdateBranchDto updateBranchDto)
+        {
+            branch.BranchName = updateBranchDto.BranchName;
+            branch.ManagerId = updateBranchDto.ManagerId;
+            branch.ManagerStartDate = updateBranchDto.ManagerStartDate;
+
+            return;
+        }
+    }
+}

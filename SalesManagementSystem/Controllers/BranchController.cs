@@ -2,6 +2,7 @@
 using SalesManagementSystem.Dtos.BranchDtos;
 using SalesManagementSystem.Dtos.EmployeeDtos;
 using SalesManagementSystem.Interfaces;
+using SalesManagementSystem.Mapper;
 using SalesManagementSystem.Models;
 
 namespace SalesManagementSystem.Controllers
@@ -22,13 +23,8 @@ namespace SalesManagementSystem.Controllers
         public IActionResult GetAllBranch()
         {
             var branchList = _branchRepository.GetAllBranch();
-            List<GetBranchDto> branchDtos = branchList.Select(b => new GetBranchDto
-            {
-                BranchId = b.BranchId,
-                BranchName = b.BranchName,
-                ManagerId = b.ManagerId,
-                ManagerStartDate = b.ManagerStartDate
-            }).ToList();
+            List<GetBranchDto> branchDtos = branchList.Select(b => b.ToGetBranchDto()).ToList();
+
             return Ok(branchDtos);
         }
 
@@ -40,21 +36,12 @@ namespace SalesManagementSystem.Controllers
             {
                 return NotFound();
             }
-            GetByIdDetailedInfoBranchDto branchDto = new GetByIdDetailedInfoBranchDto
-            {
-                BranchId = branch.BranchId,
-                BranchName = branch.BranchName,
-                ManagerStartDate = branch.ManagerStartDate
-            };
+
+            GetByIdDetailedInfoBranchDto branchDto = branch.ToGetByIdDetailedInfoBranchDto();
             if (branch.ManagerId != null)
             {
                 var manager = _employeeRepository.GetEmployeeById(branch.ManagerId.Value);
-                branchDto.Manager = new GetByIdShortInfoEmployee
-                {
-                    EmployeeId = manager.EmployeeId,
-                    FirstName = manager.FirstName,
-                    LastName = manager.LastName,
-                };
+                branchDto.Manager = manager.ToGetByIdShortInfoEmployeeDto();
             }
             return Ok(branchDto);
         }
@@ -62,24 +49,24 @@ namespace SalesManagementSystem.Controllers
         [HttpPost]
         public IActionResult CreateBranch(CreateBranchDto createBranchDto)
         {
-            if(createBranchDto.ManagerId != null)
+            if (createBranchDto.ManagerId != null)
             {
                 var manager = _employeeRepository.GetEmployeeById(createBranchDto.ManagerId.Value);
                 if (manager == null)
                 {
                     return BadRequest("Manager with the specified ID does not exist.");
                 }
+                // This should be changed as an employee can be a manager of multiple branches, but for now I will keep it as is.
+                var existingBranch = _branchRepository.GetBranchByManagerId(manager.EmployeeId);
+                if(existingBranch != null)
+                {
+                    return BadRequest("The specified manager is already assigned to another branch.");
+                }
             }
-            var branch = new Branch
-            {
-                BranchName = createBranchDto.BranchName,
-                ManagerId = createBranchDto.ManagerId,
-                ManagerStartDate = createBranchDto.ManagerStartDate
-            };
-
+            var branch = createBranchDto.ToBranchFromCreateBranchDto();
             _branchRepository.AddBranch(branch);
 
-            return Ok(branch);
+            return Ok(branch.ToGetByIdDetailedInfoBranchDto());
         }
 
         [HttpPut("{branchId:int}")]
@@ -90,13 +77,24 @@ namespace SalesManagementSystem.Controllers
             {
                 return NotFound();
             }
-            branch.BranchName = updateBranchDto.BranchName;
-            branch.ManagerId = updateBranchDto.ManagerId;
-            branch.ManagerStartDate = updateBranchDto.ManagerStartDate;
-
+            if (updateBranchDto.ManagerId != null)
+            {
+                var manager = _employeeRepository.GetEmployeeById(updateBranchDto.ManagerId.Value);
+                if (manager == null)
+                {
+                    return BadRequest("Manager with the specified ID does not exist.");
+                }
+                // This should be changed as an employee can be a manager of multiple branches, but for now I will keep it as is.
+                var existingBranch = _branchRepository.GetBranchByManagerId(manager.EmployeeId);
+                if (existingBranch != null)
+                {
+                    return BadRequest("The specified manager is already assigned to another branch.");
+                }
+            }
+            branch.ToBranchFromUpdateBranchDto(updateBranchDto);
             _branchRepository.UpdateBranch(branch);
 
-            return Ok(branch);
+            return Ok(branch.ToGetByIdDetailedInfoBranchDto());
         }
 
         [HttpDelete("{branchId:int}")]

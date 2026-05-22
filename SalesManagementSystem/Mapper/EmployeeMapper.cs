@@ -5,15 +5,15 @@ namespace SalesManagementSystem.Mapper
 {
     public static class EmployeeMapper
     {
-        public static GetAllEmployeeDto ToGetAllEmployeeDto(this Employee e)
+        public static GetAllEmployeeDto ToGetAllEmployeeDto(this Employee employee)
         {
             return new GetAllEmployeeDto
             {
-                EmployeeId = e.EmployeeId,
-                FirstName = e.FirstName,
-                LastName = e.LastName,
-                SupervisorId = e.SupervisorId,
-                BranchId = e.BranchId
+                EmployeeId = employee.EmployeeId,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                SupervisorId = employee.SupervisorId,
+                BranchId = employee.BranchId
             };
         }
 
@@ -28,6 +28,16 @@ namespace SalesManagementSystem.Mapper
                 Salary = employee.Salary,
                 Sex = employee.Sex,
                 SuperId = employee.SupervisorId,
+            };
+        }
+
+        public static GetByIdShortInfoEmployee ToGetByIdShortInfoEmployeeDto(this Employee employee)
+        {
+            return new GetByIdShortInfoEmployee
+            {
+                EmployeeId = employee.EmployeeId,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName
             };
         }
 

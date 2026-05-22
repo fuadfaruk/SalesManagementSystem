@@ -20,6 +20,10 @@ namespace SalesManagementSystem.Repositories
         {
             return _context.Branches.SingleOrDefault(e => e.BranchId == branchId);
         }
+        public Branch? GetBranchByManagerId(int managerId)
+        {
+            return _context.Branches.FirstOrDefault(e => e.ManagerId == managerId);
+        }
         public void AddBranch(Branch branch)
         {
             _context.Branches.Add(branch);
