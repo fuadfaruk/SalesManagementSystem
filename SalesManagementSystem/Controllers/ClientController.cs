@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SalesManagementSystem.Dtos.ClientDtos;
 using SalesManagementSystem.Interfaces;
-using SalesManagementSystem.Models;
+using SalesManagementSystem.Mapper;
 
 namespace SalesManagementSystem.Controllers
 {
@@ -21,12 +21,7 @@ namespace SalesManagementSystem.Controllers
         public IActionResult GetAllClient()
         {
             var clientList = _clientRepository.GetAllClients();
-            List<GetAllClientDto> employeeDtos = clientList.Select(c => new GetAllClientDto
-            {
-                ClientId = c.ClientId,
-                ClientName = c.ClientName,
-                BranchId = c.BranchId,
-            }).ToList();
+            List<GetAllClientDto> employeeDtos = clientList.Select(c => c.ToGetAllClientsDto()).ToList();
 
             return Ok(employeeDtos);
         }
@@ -40,13 +35,8 @@ namespace SalesManagementSystem.Controllers
                 return BadRequest("Client not found");
             }
 
-            var clientDto = new GetByIdClientDto
-            {
-                ClientId = client.ClientId,
-                ClientName = client.ClientName,
-                BranchId = client.BranchId,
-                Branch = client.Branch
-            };
+            var clientDto = client.ToGetByIdClientDto();
+            clientDto.Branch = _branchRepository.GetBranchById(client.BranchId);
 
             return Ok(client);
         }
@@ -54,12 +44,7 @@ namespace SalesManagementSystem.Controllers
         [HttpPost]
         public IActionResult AddClient(CreateClientDto createClientDto)
         {
-            var client = new Client
-            {
-                ClientName = createClientDto.ClientName,
-                BranchId = createClientDto.BranchId,
-            };
-
+            var client = createClientDto.ToClientFromCreateClientDto();
             var branch = _branchRepository.GetBranchById(client.BranchId);
             if (branch == null)
             {
@@ -84,8 +69,7 @@ namespace SalesManagementSystem.Controllers
                 return BadRequest("Branch not found. Enter a valid branch!");
             }
 
-            client.ClientName = updateClientDto.ClientName;
-            client.BranchId = updateClientDto.BranchId;
+            client.ToClientFromUpdateClientDto(updateClientDto);
 
             _clientRepository.UpdateClient(client);
 

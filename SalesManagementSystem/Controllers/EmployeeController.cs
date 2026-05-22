@@ -73,7 +73,7 @@ namespace SalesManagementSystem.Controllers
                     return NotFound("Branch ID does not exist!");
                 }
             }
-            var employee = employeeDto.ToEmployee();
+            var employee = employeeDto.ToEmployeeFromCreateEmployeeDto();
             _employeeRepository.AddEmployee(employee);
 
             return Ok(employee);
@@ -104,7 +104,7 @@ namespace SalesManagementSystem.Controllers
                 }
             }
 
-            employee.ToEmployee(employeeDto);
+            employee.ToEmployeeFromUpdateEmployeeDto(employeeDto);
 
             _employeeRepository.UpdateEmployee(employee);
 

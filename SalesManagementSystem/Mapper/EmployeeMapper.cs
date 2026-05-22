@@ -31,7 +31,7 @@ namespace SalesManagementSystem.Mapper
             };
         }
 
-        public static Employee ToEmployee(this CreateEmployeeDto employeeDto)
+        public static Employee ToEmployeeFromCreateEmployeeDto(this CreateEmployeeDto employeeDto)
         {
             return new Employee
             {
@@ -45,7 +45,7 @@ namespace SalesManagementSystem.Mapper
             };
         }
 
-        public static void ToEmployee(this Employee employee, UpdateEmployeeDto employeeDto)
+        public static void ToEmployeeFromUpdateEmployeeDto(this Employee employee, UpdateEmployeeDto employeeDto)
         {
             employee.BirthDay = employeeDto.BirthDate;
             employee.FirstName = employeeDto.FirstName;
