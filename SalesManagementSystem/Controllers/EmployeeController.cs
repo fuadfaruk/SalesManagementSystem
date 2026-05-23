@@ -21,18 +21,18 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllEmployee()
+        public async Task<IActionResult> GetAllEmployee()
         {
-            var employeeList = _employeeRepository.GetAllEmployee();
+            var employeeList = await _employeeRepository.GetAllEmployeeAsync();
             List<GetAllEmployeeDto> employeeDtos = employeeList.Select(s => s.ToGetAllEmployeeDto()).ToList();
 
             return Ok(employeeDtos);
         }
 
         [HttpGet("{empId:int}")]
-        public IActionResult GetEmployeeById(int empId)
+        public async Task<IActionResult> GetEmployeeById(int empId)
         {
-            var employee = _employeeRepository.GetEmployeeById(empId);
+            var employee = await _employeeRepository.GetEmployeeByIdAsync(empId);
             if (employee == null) 
             {
                 return NotFound();
@@ -40,7 +40,7 @@ namespace SalesManagementSystem.Controllers
             GetByIdDetailedInfoEmployeeDto employeeDto = employee.ToGetByIdDetailedInfoEmployeeDto();
             if (employee.BranchId != null)
             {
-                var branch = _branchRepository.GetBranchById(employee.BranchId.Value);
+                var branch = await _branchRepository.GetBranchByIdAsync(employee.BranchId.Value);
                 if (branch != null)
                 {
                     employeeDto.Branch = new GetByIdShortInfoBranchDto
@@ -55,11 +55,11 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddEmployee(CreateEmployeeDto employeeDto)
+        public async Task<IActionResult> AddEmployee(CreateEmployeeDto employeeDto)
         {
             if (employeeDto.SuperId != null)
             {
-                var supervisor = _employeeRepository.GetEmployeeById(employeeDto.SuperId.Value);
+                var supervisor = await _employeeRepository.GetEmployeeByIdAsync(employeeDto.SuperId.Value);
                 if(supervisor == null)
                 {
                     return NotFound("Supervisor ID does not exist!");
@@ -67,29 +67,29 @@ namespace SalesManagementSystem.Controllers
             }
             if(employeeDto.BranchId != null)
             {
-                var branch = _branchRepository.GetBranchById(employeeDto.BranchId.Value);
+                var branch = await _branchRepository.GetBranchByIdAsync(employeeDto.BranchId.Value);
                 if (branch == null)
                 {
                     return NotFound("Branch ID does not exist!");
                 }
             }
             var employee = employeeDto.ToEmployeeFromCreateEmployeeDto();
-            _employeeRepository.AddEmployee(employee);
+            await _employeeRepository.AddEmployeeAsync(employee);
 
             return Ok(employee);
         }
 
         [HttpPut("{empId:int}")]
-        public IActionResult UpdateEmployee(int empId, UpdateEmployeeDto employeeDto)
+        public async Task<IActionResult> UpdateEmployee(int empId, UpdateEmployeeDto employeeDto)
         {
-            var employee = _employeeRepository.GetEmployeeById(empId);
+            var employee = await _employeeRepository.GetEmployeeByIdAsync(empId);
             if (employee == null)
             {
                 return NotFound("Employee ID does not exist!");
             }
             if(employeeDto.BranchId != null && employeeDto.BranchId != employee.BranchId)
             {
-                var branch = _branchRepository.GetBranchById(employeeDto.BranchId.Value);
+                var branch = await _branchRepository.GetBranchByIdAsync(employeeDto.BranchId.Value);
                 if (branch == null)
                 {
                     return NotFound("Branch ID does not exist!");
@@ -97,38 +97,40 @@ namespace SalesManagementSystem.Controllers
             }
             if(employeeDto.SuperId != null && employeeDto.SuperId != employee.SupervisorId)
             {
-                var supervisor = _employeeRepository.GetEmployeeById(employeeDto.SuperId.Value);
+                var supervisor = await _employeeRepository.GetEmployeeByIdAsync(employeeDto.SuperId.Value);
                 if (supervisor == null)
                 {
                     return NotFound("Supervisor ID does not exist!");
                 }
             }
 
-            employee.ToEmployeeFromUpdateEmployeeDto(employeeDto);
-
-            _employeeRepository.UpdateEmployee(employee);
+            var updated = await _employeeRepository.UpdateEmployeeAsync(empId, employeeDto);
+            if (updated == false)
+            {
+                return BadRequest("An error occured!");
+            }
 
             return Ok(employee);
         }
 
         [HttpDelete("{empId:int}")]
-        public IActionResult DeleteEmployee(int empId)
+        public async Task<IActionResult> DeleteEmployee(int empId)
         {
-            var employee = _employeeRepository.GetEmployeeById(empId);
+            var employee = await _employeeRepository.GetEmployeeByIdAsync(empId);
             if (employee == null)
             {
                 return NotFound("Employee ID does not exist!");
             }
             if (employee.BranchId != null)
             {
-                var branch = _branchRepository.GetBranchById(employee.BranchId.Value);
+                var branch = await _branchRepository.GetBranchByIdAsync(employee.BranchId.Value);
                 if (branch != null)
                 {
                     return BadRequest("Cannot delete employee because they are a manager of a branch. Please assign another manager to the branch before deleting this employee.");
                 }
             }
 
-            _employeeRepository.DeleteEmployee(employee);
+            await _employeeRepository.DeleteEmployeeAsync(employee);
 
             return NoContent();
         }

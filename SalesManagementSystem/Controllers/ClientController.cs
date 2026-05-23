@@ -27,7 +27,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet("{clientId:int}")]
-        public IActionResult GetClient(int clientId)
+        public async Task<IActionResult> GetClient(int clientId)
         {
             var client = _clientRepository.GetClientById(clientId);
             if (client == null)
@@ -36,16 +36,16 @@ namespace SalesManagementSystem.Controllers
             }
 
             var clientDto = client.ToGetByIdClientDto();
-            clientDto.Branch = _branchRepository.GetBranchById(client.BranchId);
+            clientDto.Branch = await _branchRepository.GetBranchByIdAsync(client.BranchId);
 
             return Ok(client);
         }
 
         [HttpPost]
-        public IActionResult AddClient(CreateClientDto createClientDto)
+        public async Task<IActionResult> AddClient(CreateClientDto createClientDto)
         {
             var client = createClientDto.ToClientFromCreateClientDto();
-            var branch = _branchRepository.GetBranchById(client.BranchId);
+            var branch = await _branchRepository.GetBranchByIdAsync(client.BranchId);
             if (branch == null)
             {
                 return BadRequest("Branch not found. Enter a valid branch!");
@@ -56,14 +56,14 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpPut("{clientId:int}")]
-        public IActionResult UpdateClient(int clientId, UpdateClientDto updateClientDto)
+        public async Task<IActionResult> UpdateClient(int clientId, UpdateClientDto updateClientDto)
         {
             var client = _clientRepository.GetClientById(clientId);
             if (client == null)
             {
                 return NotFound("Client not found");
             }
-            var branch = _branchRepository.GetBranchById(updateClientDto.BranchId);
+            var branch = await _branchRepository.GetBranchByIdAsync(updateClientDto.BranchId);
             if (branch == null)
             {
                 return BadRequest("Branch not found. Enter a valid branch!");

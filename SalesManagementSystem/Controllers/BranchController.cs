@@ -29,9 +29,9 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet("{branchId:int}")]
-        public IActionResult GetBranchById(int branchId)
+        public async Task<IActionResult> GetBranchById(int branchId)
         {
-            var branch = _branchRepository.GetBranchById(branchId);
+            var branch = await _branchRepository.GetBranchByIdAsync(branchId);
             if (branch == null)
             {
                 return NotFound();
@@ -40,18 +40,21 @@ namespace SalesManagementSystem.Controllers
             GetByIdDetailedInfoBranchDto branchDto = branch.ToGetByIdDetailedInfoBranchDto();
             if (branch.ManagerId != null)
             {
-                var manager = _employeeRepository.GetEmployeeById(branch.ManagerId.Value);
-                branchDto.Manager = manager.ToGetByIdShortInfoEmployeeDto();
+                var manager = await _employeeRepository.GetEmployeeByIdAsync(branch.ManagerId.Value);
+                if(manager != null)
+                {
+                    branchDto.Manager = manager.ToGetByIdShortInfoEmployeeDto();
+                }
             }
             return Ok(branchDto);
         }
 
         [HttpPost]
-        public IActionResult CreateBranch(CreateBranchDto createBranchDto)
+        public async Task<IActionResult> CreateBranch(CreateBranchDto createBranchDto)
         {
             if (createBranchDto.ManagerId != null)
             {
-                var manager = _employeeRepository.GetEmployeeById(createBranchDto.ManagerId.Value);
+                var manager = await _employeeRepository.GetEmployeeByIdAsync(createBranchDto.ManagerId.Value);
                 if (manager == null)
                 {
                     return BadRequest("Manager with the specified ID does not exist.");
@@ -70,16 +73,16 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpPut("{branchId:int}")]
-        public IActionResult UpdateBranch(int branchId, UpdateBranchDto updateBranchDto)
+        public async Task<IActionResult> UpdateBranch(int branchId, UpdateBranchDto updateBranchDto)
         {
-            var branch = _branchRepository.GetBranchById(branchId);
+            var branch = await _branchRepository.GetBranchByIdAsync(branchId);
             if (branch == null)
             {
                 return NotFound();
             }
             if (updateBranchDto.ManagerId != null)
             {
-                var manager = _employeeRepository.GetEmployeeById(updateBranchDto.ManagerId.Value);
+                var manager = await _employeeRepository.GetEmployeeByIdAsync(updateBranchDto.ManagerId.Value);
                 if (manager == null)
                 {
                     return BadRequest("Manager with the specified ID does not exist.");
@@ -98,14 +101,14 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpDelete("{branchId:int}")]
-        public IActionResult DeleteBranch(int branchId)
+        public async Task<IActionResult> DeleteBranch(int branchId)
         {
-            var branch = _branchRepository.GetBranchById(branchId);
+            var branch = await _branchRepository.GetBranchByIdAsync(branchId);
             if (branch == null)
             {
                 return NotFound();
             }
-            _branchRepository.DeleteBranch(branch);
+            await _branchRepository.DeleteBranchAsync(branch);
 
             return NoContent();
         }

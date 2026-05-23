@@ -1,4 +1,5 @@
-﻿using SalesManagementSystem.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SalesManagementSystem.Data;
 using SalesManagementSystem.Interfaces;
 using SalesManagementSystem.Models;
 
@@ -16,9 +17,9 @@ namespace SalesManagementSystem.Repositories
         {
             return _context.Branches.ToList();
         }
-        public Branch? GetBranchById(int branchId)
+        public async Task<Branch?> GetBranchByIdAsync(int branchId)
         {
-            return _context.Branches.SingleOrDefault(e => e.BranchId == branchId);
+            return await _context.Branches.SingleOrDefaultAsync(e => e.BranchId == branchId);
         }
         public Branch? GetBranchByManagerId(int managerId)
         {
@@ -38,10 +39,10 @@ namespace SalesManagementSystem.Repositories
 
             return;
         }
-        public void DeleteBranch(Branch branch)
+        public async Task DeleteBranchAsync(Branch branch)
         {
             _context.Branches.Remove(branch);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return;
         }

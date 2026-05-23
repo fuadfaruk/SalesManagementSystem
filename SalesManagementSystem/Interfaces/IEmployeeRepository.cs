@@ -1,14 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SalesManagementSystem.Dtos.EmployeeDtos;
 using SalesManagementSystem.Models;
 
 namespace SalesManagementSystem.Interfaces
 {
     public interface IEmployeeRepository
     {
-        public List<Employee> GetAllEmployee();
-        public Employee? GetEmployeeById(int employeeId);
-        public void AddEmployee(Employee employee);
-        public void UpdateEmployee(Employee employee);
-        public void DeleteEmployee(Employee employee);
+        Task<List<Employee>> GetAllEmployeeAsync();
+        Task<Employee?> GetEmployeeByIdAsync(int employeeId);
+        Task AddEmployeeAsync(Employee employee);
+        Task<bool> UpdateEmployeeAsync(int employeeId, UpdateEmployeeDto updateEmployee);
+        Task DeleteEmployeeAsync(Employee employee);
     }
 }

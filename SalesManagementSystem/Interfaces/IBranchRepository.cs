@@ -5,10 +5,10 @@ namespace SalesManagementSystem.Interfaces
     public interface IBranchRepository
     {
         List<Branch> GetAllBranch();
-        Branch? GetBranchById(int branchId);
+        Task<Branch?> GetBranchByIdAsync(int branchId);
         public Branch? GetBranchByManagerId(int managerId);
         void AddBranch(Branch branch);
         void UpdateBranch(Branch branch);
-        void DeleteBranch(Branch branch);
+        Task DeleteBranchAsync(Branch branch);
     }
 }

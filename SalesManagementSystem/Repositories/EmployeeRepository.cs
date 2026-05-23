@@ -1,5 +1,8 @@
-﻿using SalesManagementSystem.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SalesManagementSystem.Data;
+using SalesManagementSystem.Dtos.EmployeeDtos;
 using SalesManagementSystem.Interfaces;
+using SalesManagementSystem.Mapper;
 using SalesManagementSystem.Models;
 
 namespace SalesManagementSystem.Repositories
@@ -12,36 +15,43 @@ namespace SalesManagementSystem.Repositories
             _context = context;
         }
 
-        public List<Employee> GetAllEmployee()
+        public async Task<List<Employee>> GetAllEmployeeAsync()
         {
-            return _context.Employees.ToList();
+            return await _context.Employees.ToListAsync();
         }
 
-        public Employee? GetEmployeeById(int empId)
+        public async Task<Employee?> GetEmployeeByIdAsync(int empId)
         {
-            return _context.Employees.FirstOrDefault(e => e.EmployeeId == empId);
+            return await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == empId);
         }
 
-        public void AddEmployee(Employee employee)
+        public async Task AddEmployeeAsync(Employee employee)
         {
-            _context.Employees.Add(employee);
-            _context.SaveChanges();
+            await _context.Employees.AddAsync(employee);
+            await _context.SaveChangesAsync();
 
             return;
         }
 
-        public void UpdateEmployee(Employee employee)
+        public async Task<bool> UpdateEmployeeAsync(int employeeId, UpdateEmployeeDto updateEmployee)
         {
-            _context.Employees.Update(employee);
-            _context.SaveChanges();
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId ==  employeeId);
+            if (employee == null)
+            {
+                return false;
+            }
+            employee.ToEmployeeFromUpdateEmployeeDto(updateEmployee);
+            employee.EmployeeId = employeeId;
 
-            return;
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
-        public void DeleteEmployee(Employee employee)
+        public async Task DeleteEmployeeAsync(Employee employee)
         {
             _context.Employees.Remove(employee);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return;
         }
