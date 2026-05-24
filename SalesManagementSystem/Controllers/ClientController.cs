@@ -18,9 +18,9 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllClient()
+        public async Task<IActionResult> GetAllClient()
         {
-            var clientList = _clientRepository.GetAllClients();
+            var clientList = await _clientRepository.GetAllClientsAsync();
             List<GetAllClientDto> employeeDtos = clientList.Select(c => c.ToGetAllClientsDto()).ToList();
 
             return Ok(employeeDtos);
@@ -29,7 +29,7 @@ namespace SalesManagementSystem.Controllers
         [HttpGet("{clientId:int}")]
         public async Task<IActionResult> GetClient(int clientId)
         {
-            var client = _clientRepository.GetClientById(clientId);
+            var client = await _clientRepository.GetClientByIdAsync(clientId);
             if (client == null)
             {
                 return BadRequest("Client not found");
@@ -50,7 +50,7 @@ namespace SalesManagementSystem.Controllers
             {
                 return BadRequest("Branch not found. Enter a valid branch!");
             }
-            _clientRepository.AddClient(client);
+            await _clientRepository.AddClientAsync(client);
 
             return Ok(client);
         }
@@ -58,7 +58,7 @@ namespace SalesManagementSystem.Controllers
         [HttpPut("{clientId:int}")]
         public async Task<IActionResult> UpdateClient(int clientId, UpdateClientDto updateClientDto)
         {
-            var client = _clientRepository.GetClientById(clientId);
+            var client = await _clientRepository.GetClientByIdAsync(clientId);
             if (client == null)
             {
                 return NotFound("Client not found");
@@ -69,23 +69,21 @@ namespace SalesManagementSystem.Controllers
                 return BadRequest("Branch not found. Enter a valid branch!");
             }
 
-            client.ToClientFromUpdateClientDto(updateClientDto);
-
-            _clientRepository.UpdateClient(client);
+            await _clientRepository.UpdateClientAsync(clientId, updateClientDto);
 
             return Ok(client);
         }
 
         [HttpDelete("{clientId:int}")]
-        public IActionResult DeleteClient(int clientId)
+        public async Task<IActionResult> DeleteClient(int clientId)
         {
-            var client = _clientRepository.GetClientById(clientId);
+            var client = await _clientRepository.GetClientByIdAsync(clientId);
             if (client == null)
             {
                 return NotFound("Client not found");
             }
 
-            _clientRepository.DeleteClient(client);
+            await _clientRepository.DeleteClientAsync(client);
 
             return Ok("Client deleted successfully");
         }
