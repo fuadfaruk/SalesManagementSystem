@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SalesManagementSystem.Data;
+using SalesManagementSystem.Dtos.BranchDtos;
 using SalesManagementSystem.Interfaces;
+using SalesManagementSystem.Mapper;
 using SalesManagementSystem.Models;
 
 // Fix return codes (Add details of the object when returned)
@@ -13,31 +15,36 @@ namespace SalesManagementSystem.Repositories
         {
             _context = context;
         }
-        public List<Branch> GetAllBranch()
+        public async Task<List<Branch>> GetAllBranchAsync()
         {
-            return _context.Branches.ToList();
+            return await _context.Branches.ToListAsync();
         }
         public async Task<Branch?> GetBranchByIdAsync(int branchId)
         {
             return await _context.Branches.SingleOrDefaultAsync(e => e.BranchId == branchId);
         }
-        public Branch? GetBranchByManagerId(int managerId)
+        public async Task<Branch?> GetBranchByManagerIdAsync(int managerId)
         {
-            return _context.Branches.FirstOrDefault(e => e.ManagerId == managerId);
+            return await _context.Branches.FirstOrDefaultAsync(e => e.ManagerId == managerId);
         }
-        public void AddBranch(Branch branch)
+        public async Task AddBranchAsync(Branch branch)
         {
-            _context.Branches.Add(branch);
-            _context.SaveChanges();
+            await _context.Branches.AddAsync(branch);
+            await _context.SaveChangesAsync();
 
             return;
         }
-        public void UpdateBranch(Branch branch)
+        public async Task<bool> UpdateBranchAsync(int branchId, UpdateBranchDto updateBranchDto)
         {
-            _context.Branches.Update(branch);
-            _context.SaveChanges();
+            var branch = await _context.Branches.FirstOrDefaultAsync(b => b.BranchId == branchId);
+            if (branch == null)
+            {
+                return false;
+            }
+            branch.ToBranchFromUpdateBranchDto(updateBranchDto);
+            await _context.SaveChangesAsync();
 
-            return;
+            return true;
         }
         public async Task DeleteBranchAsync(Branch branch)
         {

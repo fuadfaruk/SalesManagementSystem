@@ -1,14 +1,15 @@
-﻿using SalesManagementSystem.Models;
+﻿using SalesManagementSystem.Dtos.BranchDtos;
+using SalesManagementSystem.Models;
 
 namespace SalesManagementSystem.Interfaces
 {
     public interface IBranchRepository
     {
-        List<Branch> GetAllBranch();
+        Task<List<Branch>> GetAllBranchAsync();
         Task<Branch?> GetBranchByIdAsync(int branchId);
-        public Branch? GetBranchByManagerId(int managerId);
-        void AddBranch(Branch branch);
-        void UpdateBranch(Branch branch);
+        Task<Branch?> GetBranchByManagerIdAsync(int managerId);
+        Task AddBranchAsync(Branch branch);
+        Task<bool> UpdateBranchAsync(int branchId, UpdateBranchDto updateBranchDto);
         Task DeleteBranchAsync(Branch branch);
     }
 }

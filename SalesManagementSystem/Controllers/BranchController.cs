@@ -20,9 +20,9 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllBranch()
+        public async Task<IActionResult> GetAllBranchAsync()
         {
-            var branchList = _branchRepository.GetAllBranch();
+            var branchList = await _branchRepository.GetAllBranchAsync();
             List<GetBranchDto> branchDtos = branchList.Select(b => b.ToGetBranchDto()).ToList();
 
             return Ok(branchDtos);
@@ -60,14 +60,14 @@ namespace SalesManagementSystem.Controllers
                     return BadRequest("Manager with the specified ID does not exist.");
                 }
                 // This should be changed as an employee can be a manager of multiple branches, but for now I will keep it as is.
-                var existingBranch = _branchRepository.GetBranchByManagerId(manager.EmployeeId);
+                var existingBranch = await _branchRepository.GetBranchByManagerIdAsync(manager.EmployeeId);
                 if(existingBranch != null)
                 {
                     return BadRequest("The specified manager is already assigned to another branch.");
                 }
             }
             var branch = createBranchDto.ToBranchFromCreateBranchDto();
-            _branchRepository.AddBranch(branch);
+            await _branchRepository.AddBranchAsync(branch);
 
             return Ok(branch.ToGetByIdDetailedInfoBranchDto());
         }
@@ -78,7 +78,7 @@ namespace SalesManagementSystem.Controllers
             var branch = await _branchRepository.GetBranchByIdAsync(branchId);
             if (branch == null)
             {
-                return NotFound();
+                return NotFound("Branch ID does not exists!");
             }
             if (updateBranchDto.ManagerId != null)
             {
@@ -88,16 +88,15 @@ namespace SalesManagementSystem.Controllers
                     return BadRequest("Manager with the specified ID does not exist.");
                 }
                 // This should be changed as an employee can be a manager of multiple branches, but for now I will keep it as is.
-                var existingBranch = _branchRepository.GetBranchByManagerId(manager.EmployeeId);
+                var existingBranch = await _branchRepository.GetBranchByManagerIdAsync(manager.EmployeeId);
                 if (existingBranch != null)
                 {
                     return BadRequest("The specified manager is already assigned to another branch.");
                 }
             }
-            branch.ToBranchFromUpdateBranchDto(updateBranchDto);
-            _branchRepository.UpdateBranch(branch);
+            await _branchRepository.UpdateBranchAsync(branchId, updateBranchDto);
 
-            return Ok(branch.ToGetByIdDetailedInfoBranchDto());
+            return Ok();
         }
 
         [HttpDelete("{branchId:int}")]

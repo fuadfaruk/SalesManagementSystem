@@ -30,7 +30,7 @@ namespace SalesManagementSystem.Data
                     .HasOne(b => b.Manager)
                     .WithOne()
                     .HasForeignKey<Branch>(b => b.ManagerId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.SetNull);
             }
     }
 

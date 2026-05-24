@@ -41,7 +41,6 @@ namespace SalesManagementSystem.Repositories
                 return false;
             }
             employee.ToEmployeeFromUpdateEmployeeDto(updateEmployee);
-            employee.EmployeeId = employeeId;
 
             await _context.SaveChangesAsync();
 
