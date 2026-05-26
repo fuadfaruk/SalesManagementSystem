@@ -1,4 +1,8 @@
-﻿using SalesManagementSystem.Data;
+﻿using Azure.Core;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using SalesManagementSystem.Data;
+using SalesManagementSystem.Dtos.WorksWithDtos;
 using SalesManagementSystem.Interfaces;
 using SalesManagementSystem.Models;
 
@@ -7,53 +11,88 @@ namespace SalesManagementSystem.Repositories
     public class WorksWithRepository : IWorksWithRepository
     {
         private readonly ApplicationDbContext _context;
-        public WorksWithRepository(ApplicationDbContext context)
+        private readonly IMemoryCache _cache;
+        public WorksWithRepository(ApplicationDbContext context, IMemoryCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
-        public List<WorksWith> GetAllWorksWith()
+        public async Task<List<WorksWith>> GetAllWorksWithAsync()
         {
-            return _context.WorksWiths.ToList();
+            return await _context.WorksWiths.ToListAsync();
         }
 
-        public List<WorksWith> GetAllWorksWithByEmployeeId(int employeeId)
+        public async Task<List<WorksWith>> GetAllWorksWithByEmployeeIdAsync(int employeeId)
         {
-            return _context.WorksWiths.Where(ww => ww.EmployeeId == employeeId).ToList();
+            return await _context.WorksWiths.Where(ww => ww.EmployeeId == employeeId).ToListAsync();
         }
 
-        public List<WorksWith> GetAllWorksWithByClientId(int clientId)
+        public async Task<List<WorksWith>> GetAllWorksWithByClientIdAsync(int clientId)
         {
-            return _context.WorksWiths.Where(ww => ww.ClientId == clientId).ToList();
+            return await _context.WorksWiths.Where(ww => ww.ClientId == clientId).ToListAsync();
         }
 
-        public WorksWith? GetByIdWorksWith(int employeeId, int clientId)
+        public async Task<WorksWith?> GetByIdWorksWithAsync(int employeeId, int clientId)
         {
-            return _context.WorksWiths.FirstOrDefault(ww => ww.EmployeeId == employeeId && ww.ClientId == clientId);
+            return await _context.WorksWiths.FirstOrDefaultAsync(ww => ww.EmployeeId == employeeId && ww.ClientId == clientId);
         }
 
-        public void AddWorksWith(WorksWith worksWith)
+        public async Task<bool> ProcessTransactionAsync(TransactionRequestDto request)
         {
-            _context.WorksWiths.Add(worksWith);
-            _context.SaveChanges();
+            if (_cache.TryGetValue(request.IdempotencyKey, out _))
+            {
+                return true;
+            }
+            using var dbTransaction = await _context.Database.BeginTransactionAsync(
+                System.Data.IsolationLevel.Serializable);
 
-            return;
-        }
+            try
+            {
+                var historyEntry = new Transaction
+                {
+                    // Fix the names of buyer and seller to employee and client
+                    IdempotencyKey = request.IdempotencyKey,
+                    EmployeeId = request.EmployeeId,
+                    ClientId = request.ClientId,
+                    TransactionAmount = request.TransactionAmount,
+                    CreatedAt = DateTime.UtcNow
+                };
+                _context.TransactionHistories.Add(historyEntry);
 
-        public void UpdateWorksWith(WorksWith worksWith)
-        {
-            _context.WorksWiths.Update(worksWith);
-            _context.SaveChanges();
+                var worksWith = await _context.WorksWiths
+                    .FindAsync(request.EmployeeId, request.ClientId);
 
-            return;
-        }
+                if (worksWith != null)
+                {
+                    worksWith.TotalSales += request.TransactionAmount;
+                }
+                else
+                {
+                    var newWorksWith = new WorksWith
+                    {
+                        EmployeeId = request.EmployeeId,
+                        ClientId = request.ClientId,
+                        TotalSales = request.TransactionAmount
+                    };
+                    await _context.WorksWiths.AddAsync(newWorksWith);
+                }
 
-        public void DeleteWorksWith(WorksWith worksWith)
-        {
-            _context.WorksWiths.Remove(worksWith);
-            _context.SaveChanges();
+                await _context.SaveChangesAsync();
+                await dbTransaction.CommitAsync();
 
-            return;
+                _cache.Set(request.IdempotencyKey, true, TimeSpan.FromDays(1));
+            }
+            catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("Unique") == true)
+            {
+                await dbTransaction.RollbackAsync();
+            }
+            catch (Exception)
+            {
+                await dbTransaction.RollbackAsync();
+                return false;
+            }
+            return true;
         }
     }
 }

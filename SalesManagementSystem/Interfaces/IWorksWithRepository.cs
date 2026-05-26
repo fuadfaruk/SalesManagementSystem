@@ -1,15 +1,14 @@
-﻿using SalesManagementSystem.Models;
+﻿using SalesManagementSystem.Dtos.WorksWithDtos;
+using SalesManagementSystem.Models;
 
 namespace SalesManagementSystem.Interfaces
 {
     public interface IWorksWithRepository
     {
-        List<WorksWith> GetAllWorksWith();
-        List<WorksWith> GetAllWorksWithByEmployeeId(int employeeId);
-        List<WorksWith> GetAllWorksWithByClientId(int clientId);
-        WorksWith? GetByIdWorksWith(int employeeId, int clientId);
-        void AddWorksWith(WorksWith worksWith);
-        void UpdateWorksWith(WorksWith worksWith);
-        void DeleteWorksWith(WorksWith worksWith);
+        Task<List<WorksWith>> GetAllWorksWithAsync();
+        Task<List<WorksWith>> GetAllWorksWithByEmployeeIdAsync(int employeeId);
+        Task<List<WorksWith>> GetAllWorksWithByClientIdAsync(int clientId);
+        Task<WorksWith?> GetByIdWorksWithAsync(int employeeId, int clientId);
+        Task<bool> ProcessTransactionAsync(TransactionRequestDto request);
     }
 }

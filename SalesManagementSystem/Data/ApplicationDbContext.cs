@@ -14,6 +14,7 @@ namespace SalesManagementSystem.Data
         public DbSet<Branch> Branches { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<WorksWith> WorksWiths { get; set; }
+        public DbSet<Transaction> TransactionHistories { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -31,7 +32,12 @@ namespace SalesManagementSystem.Data
                     .WithOne()
                     .HasForeignKey<Branch>(b => b.ManagerId)
                     .OnDelete(DeleteBehavior.SetNull);
-            }
+
+                modelBuilder.Entity<Transaction>(entity => entity
+                    .HasIndex(e => e.IdempotencyKey)
+                    .IsUnique()
+                );
+        }
     }
 
     }
