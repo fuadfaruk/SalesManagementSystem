@@ -25,7 +25,7 @@ namespace SalesManagementSystem.Data
                     .HasOne(e => e.Branch)
                     .WithMany()
                     .HasForeignKey(e => e.BranchId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.SetNull);
 
                 modelBuilder.Entity<Branch>()
                     .HasOne(b => b.Manager)
