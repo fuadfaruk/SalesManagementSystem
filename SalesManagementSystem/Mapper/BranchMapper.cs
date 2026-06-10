@@ -26,13 +26,22 @@ namespace SalesManagementSystem.Mapper
             };
         }
 
-        public static Branch ToBranchFromCreateBranchDto(this CreateBranchDto createBranchDto)
+        public static GetByIdShortInfoBranchDto ToGetByIdShortInfoBranchDto(this Branch branch)
+        {
+            return new GetByIdShortInfoBranchDto
+            {
+                BranchId = branch.BranchId,
+                BranchName = branch.BranchName,
+                MangerId = branch.ManagerId
+            };
+        }
+
+        public static Branch ToBranchFromCreateBranchDto(this CreateBranchDto createBranceDto)
         {
             return new Branch
             {
-                BranchName = createBranchDto.BranchName,
-                ManagerId = createBranchDto.ManagerId,
-                ManagerStartDate = createBranchDto.ManagerStartDate
+                BranchName = createBranceDto.BranchName,
+                ManagerId = createBranceDto.ManagerId,
             };
         }
 
