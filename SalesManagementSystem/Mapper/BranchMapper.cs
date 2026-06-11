@@ -32,7 +32,7 @@ namespace SalesManagementSystem.Mapper
             {
                 BranchId = branch.BranchId,
                 BranchName = branch.BranchName,
-                MangerId = branch.ManagerId
+                ManagerId = branch.ManagerId
             };
         }
 

@@ -6,6 +6,7 @@ using SalesManagementSystem.Data;
 using SalesManagementSystem.Interfaces;
 using SalesManagementSystem.Models;
 using SalesManagementSystem.Repositories;
+using SalesManagementSystem.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,7 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IBranchRepository, BranchRepository>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IWorksWithRepository, WorksWithRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SalesManagementSystem.Dtos.Account;
+using SalesManagementSystem.Dtos.AccountDtos;
+using SalesManagementSystem.Interfaces;
 using SalesManagementSystem.Models;
 using System.Reflection.Metadata;
 
@@ -8,12 +10,14 @@ namespace SalesManagementSystem.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AccountController : Controller
+    public class AccountController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
-        public AccountController(UserManager<AppUser> userManager)
+        private readonly ITokenService _tokenService;
+        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService)
         {
             _userManager = userManager;
+            _tokenService = tokenService;
         }
 
         [HttpPost("register")]
@@ -37,7 +41,12 @@ namespace SalesManagementSystem.Controllers
 
                     if (roleResult.Succeeded)
                     {
-                        return Ok(new { Message = "User registered successfully" });
+                        new NewUserDto
+                        {
+                            UserName = user.UserName,
+                            Email = user.Email,
+                            Token = _tokenService.CreateToken(user)
+                        };
                     }
                     return StatusCode(500, new { Message = "User created but failed to assign role", Details = roleResult.Errors });
                 }

@@ -8,6 +8,6 @@ namespace SalesManagementSystem.Dtos.BranchDtos
     {
         public int BranchId { get; set; }
         public required string BranchName { get; set; }
-        public int? MangerId { get; set; }
+        public int? ManagerId { get; set; }
     }
 }

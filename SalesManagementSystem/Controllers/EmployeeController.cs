@@ -7,7 +7,7 @@ using SalesManagementSystem.Mapper;
 namespace SalesManagementSystem.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]s")]
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeRepository _employeeRepository;
@@ -45,7 +45,7 @@ namespace SalesManagementSystem.Controllers
                     {
                         BranchId = branch.BranchId,
                         BranchName = branch.BranchName,
-                        MangerId = branch.ManagerId
+                        ManagerId = branch.ManagerId
                     };
                 }
             }
@@ -84,13 +84,13 @@ namespace SalesManagementSystem.Controllers
                 }
             }
             
-            return CreatedAtAction(nameof(GetEmployeeById), new { empId = employee.EmployeeId }, createdEmployeeDto);
+            return CreatedAtAction(nameof(GetEmployeeById), new { employeeId = employee.EmployeeId }, createdEmployeeDto);
         }
 
-        [HttpPut("{empId:int}")]
-        public async Task<IActionResult> UpdateEmployee(int empId, UpdateEmployeeDto employeeDto)
+        [HttpPut("{employeeId:int}")]
+        public async Task<IActionResult> UpdateEmployee(int employeeId, UpdateEmployeeDto employeeDto)
         {
-            var employee = await _employeeRepository.GetEmployeeByIdAsync(empId);
+            var employee = await _employeeRepository.GetEmployeeByIdAsync(employeeId);
             if (employee == null)
             {
                 return BadRequest("Employee ID does not exist!");
@@ -112,7 +112,7 @@ namespace SalesManagementSystem.Controllers
                 }
             }
 
-            var updated = await _employeeRepository.UpdateEmployeeAsync(empId, employeeDto);
+            var updated = await _employeeRepository.UpdateEmployeeAsync(employeeId, employeeDto);
             if (updated == false)
             {
                 return Problem(
