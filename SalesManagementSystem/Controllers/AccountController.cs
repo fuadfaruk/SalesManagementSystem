@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SalesManagementSystem.Dtos.Account;
 using SalesManagementSystem.Dtos.AccountDtos;
 using SalesManagementSystem.Interfaces;
@@ -14,10 +15,41 @@ namespace SalesManagementSystem.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly ITokenService _tokenService;
-        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService)
+        private readonly SignInManager<AppUser> _signInManager;
+        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, SignInManager<AppUser> signInManager)
         {
             _userManager = userManager;
             _tokenService = tokenService;
+            _signInManager = signInManager;
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto model)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == model.UserName);
+
+            if(user == null)
+            {
+                return Unauthorized(new { Message = "Invalid username or password" });
+            }
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+            if(!result.Succeeded)
+            {
+                return Unauthorized(new { Message = "Invalid username or password" });
+            }
+
+            return Ok(new NewUserDto
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                Token = _tokenService.CreateToken(user)
+            });
         }
 
         [HttpPost("register")]
@@ -58,4 +90,4 @@ namespace SalesManagementSystem.Controllers
             }
         }
     }
-}}
+}
