@@ -2,7 +2,7 @@
 
 namespace SalesManagementSystem.Dtos.ClientDtos
 {
-    public class GetAllClientDto
+    public class GetClientDto
     {
         public int ClientId { get; set; }
         public required string ClientName { get; set; }

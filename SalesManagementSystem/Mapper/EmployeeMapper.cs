@@ -5,9 +5,9 @@ namespace SalesManagementSystem.Mapper
 {
     public static class EmployeeMapper
     {
-        public static GetAllEmployeeDto ToGetAllEmployeeDto(this Employee employee)
+        public static GetEmployeeDto ToGetAllEmployeeDto(this Employee employee)
         {
-            return new GetAllEmployeeDto
+            return new GetEmployeeDto
             {
                 EmployeeId = employee.EmployeeId,
                 FirstName = employee.FirstName,

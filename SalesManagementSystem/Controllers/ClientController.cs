@@ -7,7 +7,7 @@ namespace SalesManagementSystem.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ClientController : Controller
+    public class ClientController : ControllerBase
     {
         IBranchRepository _branchRepository;
         IClientRepository _clientRepository;
@@ -18,10 +18,10 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllClient()
+        public async Task<IActionResult> GetAllClients()
         {
             var clientList = await _clientRepository.GetAllClientsAsync();
-            List<GetAllClientDto> employeeDtos = clientList.Select(c => c.ToGetAllClientsDto()).ToList();
+            List<GetClientDto> employeeDtos = clientList.Select(c => c.ToGetAllClientsDto()).ToList();
 
             return Ok(employeeDtos);
         }
@@ -52,7 +52,7 @@ namespace SalesManagementSystem.Controllers
             }
             await _clientRepository.AddClientAsync(client);
 
-            return Ok(client);
+            return Ok(client.ToGetByIdClientDto());
         }
 
         [HttpPut("{clientId:int}")]
@@ -71,7 +71,7 @@ namespace SalesManagementSystem.Controllers
 
             await _clientRepository.UpdateClientAsync(clientId, updateClientDto);
 
-            return Ok(client);
+            return NoContent();
         }
 
         [HttpDelete("{clientId:int}")]

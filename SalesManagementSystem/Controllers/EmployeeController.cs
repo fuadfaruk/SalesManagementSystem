@@ -22,7 +22,7 @@ namespace SalesManagementSystem.Controllers
         public async Task<IActionResult> GetAllEmployees() 
         {
             var employeeList = await _employeeRepository.GetAllEmployeeAsync();
-            List<GetAllEmployeeDto> employeeDtos = employeeList.Select(s => s.ToGetAllEmployeeDto()).ToList();
+            List<GetEmployeeDto> employeeDtos = employeeList.Select(s => s.ToGetAllEmployeeDto()).ToList();
 
             return Ok(employeeDtos);
         }

@@ -2,10 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using SalesManagementSystem.Dtos.WorksWithDtos;
 using SalesManagementSystem.Interfaces;
+using SalesManagementSystem.Mapper;
 using SalesManagementSystem.Models;
-
-// Add Dtos
-// Add async functionality
 
 namespace SalesManagementSystem.Controllers
 {
@@ -23,31 +21,32 @@ namespace SalesManagementSystem.Controllers
             _clientRepository = clientRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllWorksWith()
+        public async Task<IActionResult> GetAllWorksWiths()
         {
             var worksWithList = await _worksWithRepository.GetAllWorksWithAsync();
+            List<GetWorksWithDto> worksWithDtos = worksWithList.Select(w => w.ToGetWorksWithDto()).ToList();
 
-            return Ok(worksWithList);
+            return Ok(worksWithDtos);
         }
 
         [HttpGet("employee/{employeeId:int}")]
-        public async Task<IActionResult> GetAllByEmployeeIdWorksWith(int employeeId)
+        public async Task<IActionResult> GetAllByEmployeeIdWorksWiths(int employeeId)
         {
             var worksWithList = await _worksWithRepository.GetAllWorksWithByEmployeeIdAsync(employeeId);
+            List<GetWorksWithDto> worksWithDtos = worksWithList.Select(w => w.ToGetWorksWithDto()).ToList();
 
-            return Ok(worksWithList);
+            return Ok(worksWithDtos);
         }
 
         [HttpGet("client/{clientId:int}")]
-        public async Task<IActionResult> GetAllByClientIdWorksWith(int clientId)
+        public async Task<IActionResult> GetAllByClientIdWorksWiths(int clientId)
         {
             var worksWithList = await _worksWithRepository.GetAllWorksWithByClientIdAsync(clientId);
+            List<GetWorksWithDto> worksWithDtos = worksWithList.Select(w => w.ToGetWorksWithDto()).ToList();
 
-            return Ok(worksWithList);
+            return Ok(worksWithDtos);
         }
 
-        // This is more of a ledger than a information table. So this will not need any seperate add and update functionality
-        // Adding a entry will check if it already exists, if it does then it will update the entry, if it doesn't then it will add a new entry
         [HttpPut]
         public async Task<IActionResult> AddTransactionWorksWith(TransactionRequestDto transactionRequestDto)
         {

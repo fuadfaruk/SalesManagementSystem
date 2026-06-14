@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SalesManagementSystem.Dtos.EmployeeDtos
 {
-    public class GetAllEmployeeDto
+    public class GetEmployeeDto
     {
         public int EmployeeId { get; set; }
         public required string FirstName { get; set; }

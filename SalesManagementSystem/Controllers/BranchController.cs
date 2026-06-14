@@ -9,7 +9,7 @@ namespace SalesManagementSystem.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class BranchController : Controller
+    public class BranchController : ControllerBase
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IBranchRepository _branchRepository;
@@ -20,7 +20,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllBranchAsync()
+        public async Task<IActionResult> GetAllBranches()
         {
             var branchList = await _branchRepository.GetAllBranchAsync();
             List<GetBranchDto> branchDtos = branchList.Select(b => b.ToGetBranchDto()).ToList();

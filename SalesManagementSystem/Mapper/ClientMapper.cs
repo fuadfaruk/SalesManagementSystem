@@ -6,9 +6,9 @@ namespace SalesManagementSystem.Mapper
 {
     public static class ClientMapper
     {
-        public static GetAllClientDto ToGetAllClientsDto(this Client c)
+        public static GetClientDto ToGetAllClientsDto(this Client c)
         {
-            return new GetAllClientDto
+            return new GetClientDto
             {
                 ClientId = c.ClientId,
                 ClientName = c.ClientName,
