@@ -6,7 +6,7 @@ using SalesManagementSystem.Mapper;
 namespace SalesManagementSystem.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]s")]
     public class ClientController : ControllerBase
     {
         IBranchRepository _branchRepository;
@@ -52,7 +52,7 @@ namespace SalesManagementSystem.Controllers
             }
             await _clientRepository.AddClientAsync(client);
 
-            return Ok(client.ToGetByIdClientDto());
+            return CreatedAtAction(nameof(GetClient), new { clientId = client.ClientId }, null);
         }
 
         [HttpPut("{clientId:int}")]

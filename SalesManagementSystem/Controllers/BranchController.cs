@@ -8,7 +8,7 @@ using SalesManagementSystem.Models;
 namespace SalesManagementSystem.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]es")]
     public class BranchController : ControllerBase
     {
         private readonly IEmployeeRepository _employeeRepository;
@@ -69,7 +69,7 @@ namespace SalesManagementSystem.Controllers
             var branch = createBranchDto.ToBranchFromCreateBranchDto();
             await _branchRepository.AddBranchAsync(branch);
 
-            return Ok(branch.ToGetByIdDetailedInfoBranchDto());
+            return CreatedAtAction(nameof(GetBranchById), new { branchId = branch.BranchId }, null);
         }
 
         [HttpPut("{branchId:int}")]
@@ -87,7 +87,6 @@ namespace SalesManagementSystem.Controllers
                 {
                     return BadRequest("Manager with the specified ID does not exist.");
                 }
-                // This should be changed as an employee can be a manager of multiple branches, but for now I will keep it as is.
                 var existingBranch = await _branchRepository.GetBranchByManagerIdAsync(manager.EmployeeId);
                 if (existingBranch != null)
                 {
@@ -96,7 +95,7 @@ namespace SalesManagementSystem.Controllers
             }
             await _branchRepository.UpdateBranchAsync(branchId, updateBranchDto);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete("{branchId:int}")]

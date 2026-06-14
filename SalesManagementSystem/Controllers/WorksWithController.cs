@@ -47,6 +47,18 @@ namespace SalesManagementSystem.Controllers
             return Ok(worksWithDtos);
         }
 
+        [HttpGet("{employeeId:int}/{clientId:int}")]
+        public async Task<IActionResult> GetWorksWith(int employeeId, int clientId)
+        {
+            var worksWith = await _worksWithRepository.GetByIdWorksWithAsync(employeeId, clientId);
+            if (worksWith == null)
+            {
+                return NotFound("WorksWith entry not found.");
+            }
+
+            return Ok(worksWith.ToGetWorksWithDto());
+        }
+
         [HttpPut]
         public async Task<IActionResult> AddTransactionWorksWith(TransactionRequestDto transactionRequestDto)
         {
@@ -60,13 +72,23 @@ namespace SalesManagementSystem.Controllers
             {
                 return BadRequest("Client with the given id does not exist! Try again!");
             }
-            var recorded = await _worksWithRepository.ProcessTransactionAsync(transactionRequestDto);
 
-            if(recorded == false)
+            var result = await _worksWithRepository.ProcessTransactionAsync(transactionRequestDto);
+
+            if (!result.Success)
             {
                 return BadRequest("Transaction entry was unsuccessful! Try again!");
             }
-            return Ok("Transaction was added successfully!");
+
+            if (result.Created && result.Entity != null)
+            {
+                return CreatedAtAction(nameof(GetWorksWith),
+                    new { employeeId = result.Entity.EmployeeId, clientId = result.Entity.ClientId },
+                    result.Entity.ToGetWorksWithDto());
+            }
+
+            return Ok("Transaction was added/updated successfully!");
         }
+
     }
 }

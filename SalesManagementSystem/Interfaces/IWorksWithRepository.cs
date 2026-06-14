@@ -9,6 +9,6 @@ namespace SalesManagementSystem.Interfaces
         Task<List<WorksWith>> GetAllWorksWithByEmployeeIdAsync(int employeeId);
         Task<List<WorksWith>> GetAllWorksWithByClientIdAsync(int clientId);
         Task<WorksWith?> GetByIdWorksWithAsync(int employeeId, int clientId);
-        Task<bool> ProcessTransactionAsync(TransactionRequestDto request);
+        Task<(bool Success, bool Created, WorksWith? Entity)> ProcessTransactionAsync(TransactionRequestDto request);
     }
 }
