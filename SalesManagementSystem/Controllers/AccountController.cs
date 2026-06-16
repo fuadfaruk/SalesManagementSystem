@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SalesManagementSystem.Dtos.Account;
 using SalesManagementSystem.Dtos.AccountDtos;
 using SalesManagementSystem.Interfaces;
 using SalesManagementSystem.Models;
@@ -26,11 +25,6 @@ namespace SalesManagementSystem.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == model.UserName);
 
             if(user == null)
@@ -57,13 +51,9 @@ namespace SalesManagementSystem.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
                 var user = new AppUser
                 {
-                    UserName = model.Username,
+                    UserName = model.UserName,
                     Email = model.Email
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);

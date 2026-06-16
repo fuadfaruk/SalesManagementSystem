@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SalesManagementSystem.Dtos.Account
+namespace SalesManagementSystem.Dtos.AccountDtos
 {
     public class RegisterDto
     {
         [Required]
-        public string? Username { get; set; }
+        public required string UserName { get; set; }
         [Required]
         [EmailAddress]
-        public string? Email { get; set; }
+        public required string Email { get; set; }
         [Required]
         public required string Password { get; set; }
     }
