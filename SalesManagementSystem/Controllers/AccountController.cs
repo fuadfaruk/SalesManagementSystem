@@ -73,13 +73,16 @@ namespace SalesManagementSystem.Controllers
 
                     if (roleResult.Succeeded)
                     {
-                        new NewUserDto
+                        var createdUser = new NewUserDto
                         {
                             UserName = user.UserName,
                             Email = user.Email,
                             Token = _tokenService.CreateToken(user)
                         };
+                        
+                        return Ok(createdUser);
                     }
+                    await _userManager.DeleteAsync(user);
                     return StatusCode(500, new { Message = "User created but failed to assign role", Details = roleResult.Errors });
                 }
                 return BadRequest(result.Errors);

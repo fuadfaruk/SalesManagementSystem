@@ -32,13 +32,13 @@ namespace SalesManagementSystem.Controllers
             var client = await _clientRepository.GetClientByIdAsync(clientId);
             if (client == null)
             {
-                return BadRequest("Client not found");
+                return NotFound("Client not found");
             }
 
             var clientDto = client.ToGetByIdClientDto();
             clientDto.Branch = await _branchRepository.GetBranchByIdAsync(client.BranchId);
 
-            return Ok(client);
+            return Ok(clientDto);
         }
 
         [HttpPost]
@@ -85,7 +85,7 @@ namespace SalesManagementSystem.Controllers
 
             await _clientRepository.DeleteClientAsync(client);
 
-            return Ok("Client deleted successfully");
+            return NoContent();
         }
     }
 }

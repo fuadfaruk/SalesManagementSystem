@@ -11,71 +11,54 @@ using SalesManagementSystem.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("DefaultConnection is not configured.");
+
+var signingKey = builder.Configuration.GetValue<string>("JWT:SigningKey")
+    ?? throw new InvalidOperationException("JWT signing key is not configured.");
+
 builder.Services.AddMemoryCache();
 builder.Services.AddControllers();
-builder.Services.AddCors(options =>
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(opts =>
 {
-    options.AddPolicy("ApiCorsPolicy", policy =>
-        policy
-              //.WithOrigins("https://your-frontend.example")
-              .AllowAnyHeader()
-              .AllowAnyMethod());
-});
-
-builder.Services.AddSwaggerGen(option =>
-{
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
-    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    opts.SwaggerDoc("v1", new OpenApiInfo { Title = "SalesManagementSystem API", Version = "v1" });
+    opts.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
-        Description = "Please enter a valid token",
+        Description = "Enter JWT as: Bearer {token}",
         Name = "Authorization",
         Type = SecuritySchemeType.Http,
         BearerFormat = "JWT",
         Scheme = "Bearer"
     });
-    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    opts.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
             {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    new string[]{}
-                }
-            });
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+            },
+            new string[] { }
+        }
+    });
 });
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("DefaultConnection is not configured.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
-    options.Password.RequireDigit = false;
-    options.Password.RequireLowercase = false;
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequiredLength = 1;
+    options.Password.RequiredLength = 8;
+    options.Lockout.MaxFailedAccessAttempts = 5;
 })
-.AddEntityFrameworkStores<ApplicationDbContext>();
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 
-var signingKey = builder.Configuration.GetValue<string>("Jwt:SigningKey")
-    ?? throw new InvalidOperationException("JWT signing key is not configured.");
-
-
-builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddScoped<IBranchRepository, BranchRepository>();
-builder.Services.AddScoped<IClientRepository, ClientRepository>();
-builder.Services.AddScoped<IWorksWithRepository, WorksWithRepository>();
-builder.Services.AddScoped<ITokenService, TokenService>();
-
-// Register authentication BEFORE building the app
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -98,17 +81,38 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ApiCorsPolicy", policy =>
+        policy
+              //.WithOrigins("https://your-frontend.example")
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});
+
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IBranchRepository, BranchRepository>();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IWorksWithRepository, WorksWithRepository>();
+
+builder.Services.AddSingleton<ITokenService, TokenService>();
+
+
 var app = builder.Build();
 
-// enable middleware
 if(app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Demo API v1"));
+    app.UseSwaggerUI();
 }
+
+app.UseHttpsRedirection();
+
+app.UseCors("ApiCorsPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 app.Run();
