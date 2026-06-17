@@ -8,7 +8,7 @@ using SalesManagementSystem.Models;
 namespace SalesManagementSystem.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class WorksWithController : ControllerBase
     {
         IWorksWithRepository _worksWithRepository;
@@ -59,7 +59,7 @@ namespace SalesManagementSystem.Controllers
             return Ok(worksWith.ToGetWorksWithDto());
         }
 
-        [HttpPut]
+        [HttpPost]
         public async Task<IActionResult> AddTransactionWorksWith(TransactionRequestDto transactionRequestDto)
         {
             var employee = await _employeeRepository.GetEmployeeByIdAsync(transactionRequestDto.EmployeeId);

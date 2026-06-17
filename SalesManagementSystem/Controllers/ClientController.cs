@@ -6,7 +6,7 @@ using SalesManagementSystem.Mapper;
 namespace SalesManagementSystem.Controllers
 {
     [ApiController]
-    [Route("[controller]s")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class ClientController : ControllerBase
     {
         IBranchRepository _branchRepository;

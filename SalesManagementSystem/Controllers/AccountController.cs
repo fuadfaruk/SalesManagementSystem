@@ -9,7 +9,7 @@ using System.Reflection.Metadata;
 namespace SalesManagementSystem.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class AccountController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;

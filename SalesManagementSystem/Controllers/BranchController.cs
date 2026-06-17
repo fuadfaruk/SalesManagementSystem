@@ -8,7 +8,7 @@ using SalesManagementSystem.Models;
 namespace SalesManagementSystem.Controllers
 {
     [ApiController]
-    [Route("[controller]es")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class BranchController : ControllerBase
     {
         private readonly IEmployeeRepository _employeeRepository;

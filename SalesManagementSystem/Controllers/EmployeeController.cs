@@ -7,7 +7,7 @@ using SalesManagementSystem.Mapper;
 namespace SalesManagementSystem.Controllers
 {
     [ApiController]
-    [Route("[controller]s")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeRepository _employeeRepository;
@@ -28,12 +28,12 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet("{empId:int}")]
-        public async Task<IActionResult> GetEmployeeById(int empId)
+        public async Task<IActionResult> GetEmployeeById(int employeeId)
         {
-            var employee = await _employeeRepository.GetEmployeeByIdAsync(empId);
+            var employee = await _employeeRepository.GetEmployeeByIdAsync(employeeId);
             if (employee == null) 
             {
-                return BadRequest();
+                return NotFound("Employee ID does not exist!");
             }
             GetByIdDetailedInfoEmployeeDto employeeDto = employee.ToGetByIdDetailedInfoEmployeeDto();
             if (employee.BranchId != null)
@@ -133,13 +133,10 @@ namespace SalesManagementSystem.Controllers
             {
                 return BadRequest("Employee ID does not exist!");
             }
-            if (employee.BranchId != null)
+            var branch = await _branchRepository.GetBranchByManagerIdAsync(employee.EmployeeId);
+            if (branch != null)
             {
-                var branch = await _branchRepository.GetBranchByIdAsync(employee.EmployeeId);
-                if (branch != null)
-                {
-                    return BadRequest("Cannot delete employee because they are a manager of a branch. Please assign another manager to the branch before deleting this employee.");
-                }
+                return BadRequest("Cannot delete employee because they are a manager of a branch. Please assign another manager to the branch before deleting this employee.");
             }
 
             await _employeeRepository.DeleteEmployeeAsync(employee);
