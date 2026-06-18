@@ -27,7 +27,7 @@ namespace SalesManagementSystem.Controllers
             return Ok(employeeDtos);
         }
 
-        [HttpGet("{empId:int}")]
+        [HttpGet("{employeeId:int}")]
         public async Task<IActionResult> GetEmployeeById(int employeeId)
         {
             var employee = await _employeeRepository.GetEmployeeByIdAsync(employeeId);
@@ -125,10 +125,10 @@ namespace SalesManagementSystem.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{empId:int}")]
-        public async Task<IActionResult> DeleteEmployee(int empId)
+        [HttpDelete("{employeeId:int}")]
+        public async Task<IActionResult> DeleteEmployee(int employeeId)
         {
-            var employee = await _employeeRepository.GetEmployeeByIdAsync(empId);
+            var employee = await _employeeRepository.GetEmployeeByIdAsync(employeeId);
             if (employee == null)
             {
                 return BadRequest("Employee ID does not exist!");
