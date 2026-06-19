@@ -17,12 +17,12 @@ namespace SalesManagementSystem.Repositories
 
         public async Task<List<Client>> GetAllClientsAsync()
         {
-            return await _context.Clients.ToListAsync();
+            return await _context.Clients.AsNoTracking().ToListAsync();
         }
 
         public async Task<Client?> GetClientByIdAsync(int clientId)
         {
-            return await _context.Clients.FirstOrDefaultAsync(c => c.ClientId == clientId);
+            return await _context.Clients.AsNoTracking().FirstOrDefaultAsync(c => c.ClientId == clientId);
         }
 
         public async Task AddClientAsync(Client client)

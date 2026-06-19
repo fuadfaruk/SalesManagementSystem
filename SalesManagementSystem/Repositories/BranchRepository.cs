@@ -17,15 +17,15 @@ namespace SalesManagementSystem.Repositories
         }
         public async Task<List<Branch>> GetAllBranchAsync()
         {
-            return await _context.Branches.ToListAsync();
+            return await _context.Branches.AsNoTracking().ToListAsync();
         }
         public async Task<Branch?> GetBranchByIdAsync(int branchId)
         {
-            return await _context.Branches.SingleOrDefaultAsync(e => e.BranchId == branchId);
+            return await _context.Branches.AsNoTracking().SingleOrDefaultAsync(e => e.BranchId == branchId);
         }
         public async Task<Branch?> GetBranchByManagerIdAsync(int managerId)
         {
-            return await _context.Branches.FirstOrDefaultAsync(e => e.ManagerId == managerId);
+            return await _context.Branches.AsNoTracking().FirstOrDefaultAsync(e => e.ManagerId == managerId);
         }
         public async Task AddBranchAsync(Branch branch)
         {

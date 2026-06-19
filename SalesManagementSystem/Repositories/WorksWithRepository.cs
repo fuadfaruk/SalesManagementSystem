@@ -20,22 +20,22 @@ namespace SalesManagementSystem.Repositories
 
         public async Task<List<WorksWith>> GetAllWorksWithAsync()
         {
-            return await _context.WorksWiths.ToListAsync();
+            return await _context.WorksWiths.AsNoTracking().ToListAsync();
         }
 
         public async Task<List<WorksWith>> GetAllWorksWithByEmployeeIdAsync(int employeeId)
         {
-            return await _context.WorksWiths.Where(ww => ww.EmployeeId == employeeId).ToListAsync();
+            return await _context.WorksWiths.AsNoTracking().Where(ww => ww.EmployeeId == employeeId).ToListAsync();
         }
 
         public async Task<List<WorksWith>> GetAllWorksWithByClientIdAsync(int clientId)
         {
-            return await _context.WorksWiths.Where(ww => ww.ClientId == clientId).ToListAsync();
+            return await _context.WorksWiths.AsNoTracking().Where(ww => ww.ClientId == clientId).ToListAsync();
         }
 
         public async Task<WorksWith?> GetByIdWorksWithAsync(int employeeId, int clientId)
         {
-            return await _context.WorksWiths.FirstOrDefaultAsync(ww => ww.EmployeeId == employeeId && ww.ClientId == clientId);
+            return await _context.WorksWiths.AsNoTracking().FirstOrDefaultAsync(ww => ww.EmployeeId == employeeId && ww.ClientId == clientId);
         }
 
         public async Task<(bool Success, bool Created, WorksWith? Entity)> ProcessTransactionAsync(TransactionRequestDto request)

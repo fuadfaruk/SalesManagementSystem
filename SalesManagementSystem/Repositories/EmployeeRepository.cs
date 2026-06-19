@@ -17,12 +17,12 @@ namespace SalesManagementSystem.Repositories
 
         public async Task<List<Employee>> GetAllEmployeeAsync()
         {
-            return await _context.Employees.ToListAsync();
+            return await _context.Employees.AsNoTracking().ToListAsync();
         }
 
         public async Task<Employee?> GetEmployeeByIdAsync(int empId)
         {
-            return await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == empId);
+            return await _context.Employees.AsNoTracking().FirstOrDefaultAsync(e => e.EmployeeId == empId);
         }
 
         public async Task AddEmployeeAsync(Employee employee)
