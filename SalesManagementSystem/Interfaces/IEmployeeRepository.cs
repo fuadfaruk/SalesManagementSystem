@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SalesManagementSystem.Dtos.EmployeeDtos;
+﻿using SalesManagementSystem.Dtos.EmployeeDtos;
 using SalesManagementSystem.Models;
 
 namespace SalesManagementSystem.Interfaces

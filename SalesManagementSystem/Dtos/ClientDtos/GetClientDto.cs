@@ -1,6 +1,4 @@
-﻿using SalesManagementSystem.Models;
-
-namespace SalesManagementSystem.Dtos.ClientDtos
+﻿namespace SalesManagementSystem.Dtos.ClientDtos
 {
     public class GetClientDto
     {

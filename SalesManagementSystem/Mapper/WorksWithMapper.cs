@@ -11,8 +11,8 @@ namespace SalesManagementSystem.Mapper
             {
                 ClientId = worksWith.ClientId,
                 EmployeeId = worksWith.EmployeeId,
-                Client = worksWith.Client,
-                Employee = worksWith.Employee,
+                Client = worksWith.Client?.ToGetClientsDto(),
+                Employee = worksWith.Employee.ToShortInfoEmployeeDto(),
                 TotalSales = worksWith.TotalSales
             };
         }

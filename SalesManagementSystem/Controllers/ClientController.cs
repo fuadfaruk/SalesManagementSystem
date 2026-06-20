@@ -21,7 +21,7 @@ namespace SalesManagementSystem.Controllers
         public async Task<IActionResult> GetAllClients()
         {
             var clientList = await _clientRepository.GetAllClientsAsync();
-            List<GetClientDto> employeeDtos = clientList.Select(c => c.ToGetAllClientsDto()).ToList();
+            List<GetClientDto> employeeDtos = clientList.Select(c => c.ToGetClientsDto()).ToList();
 
             return Ok(employeeDtos);
         }
@@ -36,7 +36,8 @@ namespace SalesManagementSystem.Controllers
             }
 
             var clientDto = client.ToGetByIdClientDto();
-            clientDto.Branch = await _branchRepository.GetBranchByIdAsync(client.BranchId);
+            var branch = await _branchRepository.GetBranchByIdAsync(client.BranchId);
+            clientDto.Branch = branch?.ToShortInfoBranchDto();
 
             return Ok(clientDto);
         }

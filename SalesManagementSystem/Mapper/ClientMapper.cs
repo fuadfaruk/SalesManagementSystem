@@ -1,28 +1,27 @@
-﻿using SalesManagementSystem.Dtos.BranchDtos;
-using SalesManagementSystem.Dtos.ClientDtos;
+﻿using SalesManagementSystem.Dtos.ClientDtos;
 using SalesManagementSystem.Models;
 
 namespace SalesManagementSystem.Mapper
 {
     public static class ClientMapper
     {
-        public static GetClientDto ToGetAllClientsDto(this Client c)
+        public static GetClientDto ToGetClientsDto(this Client client)
         {
             return new GetClientDto
             {
-                ClientId = c.ClientId,
-                ClientName = c.ClientName,
-                BranchId = c.BranchId,
+                ClientId = client.ClientId,
+                ClientName = client.ClientName,
+                BranchId = client.BranchId,
             };
         }
 
-        public static GetByIdClientDto ToGetByIdClientDto(this Client c)
+        public static GetByIdClientDto ToGetByIdClientDto(this Client client)
         {
             return new GetByIdClientDto
             {
-                ClientId = c.ClientId,
-                ClientName = c.ClientName,
-                BranchId = c.BranchId
+                ClientId = client.ClientId,
+                ClientName = client.ClientName,
+                BranchId = client.BranchId
             };
         }
 

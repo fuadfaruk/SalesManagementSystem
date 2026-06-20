@@ -17,9 +17,9 @@ namespace SalesManagementSystem.Mapper
             };
         }
 
-        public static GetByIdDetailedInfoEmployeeDto ToGetByIdDetailedInfoEmployeeDto(this Employee employee)
+        public static DetailedInfoEmployeeDto ToGetByIdDetailedInfoEmployeeDto(this Employee employee)
         {
-            return new GetByIdDetailedInfoEmployeeDto
+            return new DetailedInfoEmployeeDto
             {
                 EmployeeId = employee.EmployeeId,
                 BirthDate = employee.BirthDay,
@@ -31,9 +31,9 @@ namespace SalesManagementSystem.Mapper
             };
         }
 
-        public static GetByIdShortInfoEmployee ToGetByIdShortInfoEmployeeDto(this Employee employee)
+        public static ShortInfoEmployeeDto ToShortInfoEmployeeDto(this Employee employee)
         {
-            return new GetByIdShortInfoEmployee
+            return new ShortInfoEmployeeDto
             {
                 EmployeeId = employee.EmployeeId,
                 FirstName = employee.FirstName,

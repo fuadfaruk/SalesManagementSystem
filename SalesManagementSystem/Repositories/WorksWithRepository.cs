@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using SalesManagementSystem.Data;
 using SalesManagementSystem.Dtos.WorksWithDtos;

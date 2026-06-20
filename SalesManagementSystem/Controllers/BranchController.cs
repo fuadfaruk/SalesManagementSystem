@@ -37,13 +37,13 @@ namespace SalesManagementSystem.Controllers
                 return NotFound();
             }
 
-            GetByIdDetailedInfoBranchDto branchDto = branch.ToGetByIdDetailedInfoBranchDto();
+            DetailedInfoBranchDto branchDto = branch.ToGetByIdDetailedInfoBranchDto();
             if (branch.ManagerId != null)
             {
                 var manager = await _employeeRepository.GetEmployeeByIdAsync(branch.ManagerId.Value);
                 if(manager != null)
                 {
-                    branchDto.Manager = manager.ToGetByIdShortInfoEmployeeDto();
+                    branchDto.Manager = manager.ToShortInfoEmployeeDto();
                 }
             }
             return Ok(branchDto);

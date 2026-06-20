@@ -1,8 +1,4 @@
-﻿using SalesManagementSystem.Models;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace SalesManagementSystem.Dtos.BranchDtos
+﻿namespace SalesManagementSystem.Dtos.BranchDtos
 {
     public class GetBranchDto
     {

@@ -1,4 +1,4 @@
-﻿using SalesManagementSystem.Models;
+﻿using SalesManagementSystem.Dtos.BranchDtos;
 
 namespace SalesManagementSystem.Dtos.ClientDtos
 {
@@ -7,6 +7,6 @@ namespace SalesManagementSystem.Dtos.ClientDtos
         public int ClientId { get; set; }
         public required string ClientName { get; set; }
         public int BranchId { get; set; }
-        public Branch? Branch { get; set; }
+        public ShortInfoBranchDto? Branch { get; set; }
     }
 }

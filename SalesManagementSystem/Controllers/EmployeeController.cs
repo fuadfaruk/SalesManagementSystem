@@ -35,13 +35,13 @@ namespace SalesManagementSystem.Controllers
             {
                 return NotFound("Employee ID does not exist!");
             }
-            GetByIdDetailedInfoEmployeeDto employeeDto = employee.ToGetByIdDetailedInfoEmployeeDto();
+            DetailedInfoEmployeeDto employeeDto = employee.ToGetByIdDetailedInfoEmployeeDto();
             if (employee.BranchId != null)
             {
                 var branch = await _branchRepository.GetBranchByIdAsync(employee.BranchId.Value);
                 if (branch != null)
                 {
-                    employeeDto.Branch = new GetByIdShortInfoBranchDto
+                    employeeDto.Branch = new ShortInfoBranchDto
                     {
                         BranchId = branch.BranchId,
                         BranchName = branch.BranchName,
@@ -80,7 +80,7 @@ namespace SalesManagementSystem.Controllers
                 var branch = await _branchRepository.GetBranchByIdAsync(employee.BranchId.Value);
                 if (branch != null)
                 {
-                    createdEmployeeDto.Branch = branch.ToGetByIdShortInfoBranchDto();
+                    createdEmployeeDto.Branch = branch.ToShortInfoBranchDto();
                 }
             }
             

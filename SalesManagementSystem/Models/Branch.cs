@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace SalesManagementSystem.Models
+﻿namespace SalesManagementSystem.Models
 {
     // Change Dtos everytime after changing the model
     public class Branch

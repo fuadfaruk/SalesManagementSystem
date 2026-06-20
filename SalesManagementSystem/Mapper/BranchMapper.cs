@@ -16,9 +16,9 @@ namespace SalesManagementSystem.Mapper
             };
         }
 
-        public static GetByIdDetailedInfoBranchDto ToGetByIdDetailedInfoBranchDto(this Branch branch)
+        public static DetailedInfoBranchDto ToGetByIdDetailedInfoBranchDto(this Branch branch)
         {
-            return new GetByIdDetailedInfoBranchDto
+            return new DetailedInfoBranchDto
             {
                 BranchId = branch.BranchId,
                 BranchName = branch.BranchName,
@@ -26,9 +26,9 @@ namespace SalesManagementSystem.Mapper
             };
         }
 
-        public static GetByIdShortInfoBranchDto ToGetByIdShortInfoBranchDto(this Branch branch)
+        public static ShortInfoBranchDto ToShortInfoBranchDto(this Branch branch)
         {
-            return new GetByIdShortInfoBranchDto
+            return new ShortInfoBranchDto
             {
                 BranchId = branch.BranchId,
                 BranchName = branch.BranchName,

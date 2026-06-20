@@ -1,5 +1,5 @@
-﻿using SalesManagementSystem.Models;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using SalesManagementSystem.Dtos.ClientDtos;
+using SalesManagementSystem.Dtos.EmployeeDtos;
 
 namespace SalesManagementSystem.Dtos.WorksWithDtos
 {
@@ -8,7 +8,7 @@ namespace SalesManagementSystem.Dtos.WorksWithDtos
         public int EmployeeId { get; set; }
         public int ClientId { get; set; }
         public decimal TotalSales { get; set; }
-        public Employee Employee { get; set; } = null!;
-        public Client? Client { get; set; } = null!;
+        public ShortInfoEmployeeDto Employee { get; set; } = null!;
+        public GetClientDto? Client { get; set; } = null!;
     }
 }
