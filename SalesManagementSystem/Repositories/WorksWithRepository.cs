@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using SalesManagementSystem.Data;
 using SalesManagementSystem.Dtos.WorksWithDtos;
+using SalesManagementSystem.Helpers;
 using SalesManagementSystem.Interfaces;
 using SalesManagementSystem.Models;
 
@@ -17,9 +18,11 @@ namespace SalesManagementSystem.Repositories
             _cache = cache;
         }
 
-        public async Task<List<WorksWith>> GetAllWorksWithAsync()
+        public async Task<List<WorksWith>> GetAllWorksWithAsync(QueryObject query)
         {
-            return await _context.WorksWiths.AsNoTracking().ToListAsync();
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            return await _context.WorksWiths.Skip(skipNumber).Take(query.PageSize).AsNoTracking().ToListAsync();
         }
 
         public async Task<List<WorksWith>> GetAllWorksWithByEmployeeIdAsync(int employeeId)

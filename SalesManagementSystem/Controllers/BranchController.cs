@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SalesManagementSystem.Dtos.BranchDtos;
-using SalesManagementSystem.Dtos.EmployeeDtos;
+using SalesManagementSystem.Helpers;
 using SalesManagementSystem.Interfaces;
 using SalesManagementSystem.Mapper;
-using SalesManagementSystem.Models;
 
 namespace SalesManagementSystem.Controllers
 {
@@ -20,9 +19,9 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllBranches()
+        public async Task<IActionResult> GetAllBranches([FromQuery] QueryObject queryObject)
         {
-            var branchList = await _branchRepository.GetAllBranchAsync();
+            var branchList = await _branchRepository.GetAllBranchAsync(queryObject);
             List<GetBranchDto> branchDtos = branchList.Select(b => b.ToGetBranchDto()).ToList();
 
             return Ok(branchDtos);

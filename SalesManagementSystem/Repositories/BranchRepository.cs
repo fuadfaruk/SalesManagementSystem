@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SalesManagementSystem.Data;
 using SalesManagementSystem.Dtos.BranchDtos;
+using SalesManagementSystem.Helpers;
 using SalesManagementSystem.Interfaces;
 using SalesManagementSystem.Mapper;
 using SalesManagementSystem.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
-// Fix return codes (Add details of the object when returned)
 namespace SalesManagementSystem.Repositories
 {
     public class BranchRepository : IBranchRepository
@@ -15,9 +16,11 @@ namespace SalesManagementSystem.Repositories
         {
             _context = context;
         }
-        public async Task<List<Branch>> GetAllBranchAsync()
+        public async Task<List<Branch>> GetAllBranchAsync(QueryObject query)
         {
-            return await _context.Branches.AsNoTracking().ToListAsync();
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            return await _context.Branches.Skip(skipNumber).Take(query.PageSize).AsNoTracking().ToListAsync();
         }
         public async Task<Branch?> GetBranchByIdAsync(int branchId)
         {

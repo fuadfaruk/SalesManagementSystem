@@ -12,7 +12,7 @@ namespace SalesManagementSystem.Dtos.EmployeeDtos
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Salary { get; set; }
         public string? Sex { get; set; }
-        public int? SuperId { get; set; }
+        public ShortInfoEmployeeDto? Supervisor { get; set; }
         public ShortInfoBranchDto? Branch { get; set; }
     }
 }

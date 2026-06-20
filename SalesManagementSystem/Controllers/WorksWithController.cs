@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SalesManagementSystem.Dtos.WorksWithDtos;
+using SalesManagementSystem.Helpers;
 using SalesManagementSystem.Interfaces;
 using SalesManagementSystem.Mapper;
 using SalesManagementSystem.Models;
@@ -21,9 +22,9 @@ namespace SalesManagementSystem.Controllers
             _clientRepository = clientRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllWorksWiths()
+        public async Task<IActionResult> GetAllWorksWiths([FromQuery] QueryObject queryObject)
         {
-            var worksWithList = await _worksWithRepository.GetAllWorksWithAsync();
+            var worksWithList = await _worksWithRepository.GetAllWorksWithAsync(queryObject);
             List<GetWorksWithDto> worksWithDtos = worksWithList.Select(w => w.ToGetWorksWithDto()).ToList();
 
             return Ok(worksWithDtos);

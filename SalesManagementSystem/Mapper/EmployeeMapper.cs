@@ -17,7 +17,7 @@ namespace SalesManagementSystem.Mapper
             };
         }
 
-        public static DetailedInfoEmployeeDto ToGetByIdDetailedInfoEmployeeDto(this Employee employee)
+        public static DetailedInfoEmployeeDto ToDetailedInfoEmployeeDto(this Employee employee)
         {
             return new DetailedInfoEmployeeDto
             {
@@ -27,7 +27,8 @@ namespace SalesManagementSystem.Mapper
                 LastName = employee.LastName,
                 Salary = employee.Salary,
                 Sex = employee.Sex,
-                SuperId = employee.SupervisorId,
+                Supervisor = employee.Supervisor?.ToShortInfoEmployeeDto(),
+                Branch = employee.Branch?.ToShortInfoBranchDto()
             };
         }
 

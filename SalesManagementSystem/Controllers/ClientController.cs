@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SalesManagementSystem.Dtos.ClientDtos;
+using SalesManagementSystem.Helpers;
 using SalesManagementSystem.Interfaces;
 using SalesManagementSystem.Mapper;
 
@@ -18,9 +19,9 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllClients()
+        public async Task<IActionResult> GetAllClients([FromQuery] QueryObject queryObject)
         {
-            var clientList = await _clientRepository.GetAllClientsAsync();
+            var clientList = await _clientRepository.GetAllClientsAsync(queryObject);
             List<GetClientDto> employeeDtos = clientList.Select(c => c.ToGetClientsDto()).ToList();
 
             return Ok(employeeDtos);

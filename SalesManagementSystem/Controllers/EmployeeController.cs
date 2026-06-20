@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SalesManagementSystem.Dtos.BranchDtos;
 using SalesManagementSystem.Dtos.EmployeeDtos;
+using SalesManagementSystem.Helpers;
 using SalesManagementSystem.Interfaces;
 using SalesManagementSystem.Mapper;
 
@@ -19,9 +20,9 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllEmployees() 
+        public async Task<IActionResult> GetAllEmployees([FromQuery] QueryObject query) 
         {
-            var employeeList = await _employeeRepository.GetAllEmployeeAsync();
+            var employeeList = await _employeeRepository.GetAllEmployeeAsync(query);
             List<GetEmployeeDto> employeeDtos = employeeList.Select(s => s.ToGetAllEmployeeDto()).ToList();
 
             return Ok(employeeDtos);
@@ -35,20 +36,7 @@ namespace SalesManagementSystem.Controllers
             {
                 return NotFound("Employee ID does not exist!");
             }
-            DetailedInfoEmployeeDto employeeDto = employee.ToGetByIdDetailedInfoEmployeeDto();
-            if (employee.BranchId != null)
-            {
-                var branch = await _branchRepository.GetBranchByIdAsync(employee.BranchId.Value);
-                if (branch != null)
-                {
-                    employeeDto.Branch = new ShortInfoBranchDto
-                    {
-                        BranchId = branch.BranchId,
-                        BranchName = branch.BranchName,
-                        ManagerId = branch.ManagerId
-                    };
-                }
-            }
+            DetailedInfoEmployeeDto employeeDto = employee.ToDetailedInfoEmployeeDto();
             return Ok(employeeDto);
         }
 
@@ -74,7 +62,7 @@ namespace SalesManagementSystem.Controllers
             var employee = employeeDto.ToEmployeeFromCreateEmployeeDto();
             await _employeeRepository.AddEmployeeAsync(employee);
 
-            var createdEmployeeDto = employee.ToGetByIdDetailedInfoEmployeeDto();
+            var createdEmployeeDto = employee.ToDetailedInfoEmployeeDto();
             if (employee.BranchId != null)
             {
                 var branch = await _branchRepository.GetBranchByIdAsync(employee.BranchId.Value);

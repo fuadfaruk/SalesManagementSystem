@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SalesManagementSystem.Data;
 using SalesManagementSystem.Dtos.ClientDtos;
+using SalesManagementSystem.Helpers;
 using SalesManagementSystem.Interfaces;
 using SalesManagementSystem.Mapper;
 using SalesManagementSystem.Models;
@@ -15,9 +16,11 @@ namespace SalesManagementSystem.Repositories
             _context = context;
         }
 
-        public async Task<List<Client>> GetAllClientsAsync()
+        public async Task<List<Client>> GetAllClientsAsync(QueryObject query)
         {
-            return await _context.Clients.AsNoTracking().ToListAsync();
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            return await _context.Clients.Skip(skipNumber).Take(query.PageSize).AsNoTracking().ToListAsync();
         }
 
         public async Task<Client?> GetClientByIdAsync(int clientId)
