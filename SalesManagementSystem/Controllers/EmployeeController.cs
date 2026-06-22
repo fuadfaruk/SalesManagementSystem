@@ -4,6 +4,7 @@ using SalesManagementSystem.Dtos.EmployeeDtos;
 using SalesManagementSystem.Helpers;
 using SalesManagementSystem.Interfaces;
 using SalesManagementSystem.Mapper;
+using System.Threading;
 
 namespace SalesManagementSystem.Controllers
 {
@@ -20,18 +21,18 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllEmployees([FromQuery] QueryObject query) 
+        public async Task<IActionResult> GetAllEmployees([FromQuery] QueryObject query, CancellationToken cancellationToken)
         {
-            var employeeList = await _employeeRepository.GetAllEmployeeAsync(query);
+            var employeeList = await _employeeRepository.GetAllEmployeeAsync(query, cancellationToken);
             List<GetEmployeeDto> employeeDtos = employeeList.Select(s => s.ToGetAllEmployeeDto()).ToList();
 
             return Ok(employeeDtos);
         }
 
         [HttpGet("{employeeId:int}")]
-        public async Task<IActionResult> GetEmployeeById(int employeeId)
+        public async Task<IActionResult> GetEmployeeById(int employeeId, CancellationToken cancellationToken)
         {
-            var employee = await _employeeRepository.GetEmployeeByIdAsync(employeeId);
+            var employee = await _employeeRepository.GetEmployeeByIdAsync(employeeId, cancellationToken);
             if (employee == null) 
             {
                 return NotFound("Employee ID does not exist!");
