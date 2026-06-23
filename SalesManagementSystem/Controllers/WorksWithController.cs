@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SalesManagementSystem.Dtos.WorksWithDtos;
 using SalesManagementSystem.Helpers;
@@ -22,6 +23,7 @@ namespace SalesManagementSystem.Controllers
             _clientRepository = clientRepository;
         }
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllWorksWiths([FromQuery] QueryObject queryObject)
         {
             var worksWithList = await _worksWithRepository.GetAllWorksWithAsync(queryObject);
@@ -31,6 +33,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet("employee/{employeeId:int}")]
+        [Authorize]
         public async Task<IActionResult> GetAllByEmployeeIdWorksWiths(int employeeId)
         {
             var worksWithList = await _worksWithRepository.GetAllWorksWithByEmployeeIdAsync(employeeId);
@@ -40,6 +43,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet("client/{clientId:int}")]
+        [Authorize]
         public async Task<IActionResult> GetAllByClientIdWorksWiths(int clientId)
         {
             var worksWithList = await _worksWithRepository.GetAllWorksWithByClientIdAsync(clientId);
@@ -49,18 +53,20 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet("{employeeId:int}/{clientId:int}")]
+        [Authorize]
         public async Task<IActionResult> GetWorksWith(int employeeId, int clientId)
         {
             var worksWith = await _worksWithRepository.GetByIdWorksWithAsync(employeeId, clientId);
             if (worksWith == null)
             {
-                return NotFound("WorksWith entry not found.");
+                return NotFound("Selected Employee and Client Transaction entry not found.");
             }
 
             return Ok(worksWith.ToGetWorksWithDto());
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddTransactionWorksWith(TransactionRequestDto transactionRequestDto)
         {
             var employee = await _employeeRepository.GetEmployeeByIdAsync(transactionRequestDto.EmployeeId);

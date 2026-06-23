@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SalesManagementSystem.Dtos.BranchDtos;
 using SalesManagementSystem.Helpers;
 using SalesManagementSystem.Interfaces;
@@ -20,6 +21,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllBranches([FromQuery] QueryObject queryObject, CancellationToken cancellationToken)
         {
             var branchList = await _branchRepository.GetAllBranchAsync(queryObject, cancellationToken);
@@ -29,6 +31,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet("{branchId:int}")]
+        [Authorize]
         public async Task<IActionResult> GetBranchById(int branchId, CancellationToken cancellationToken)
         {
             var branch = await _branchRepository.GetBranchByIdAsync(branchId, cancellationToken);
@@ -50,6 +53,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateBranch(CreateBranchDto createBranchDto, CancellationToken cancellationToken)
         {
             if (createBranchDto.ManagerId != null)
@@ -73,6 +77,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpPut("{branchId:int}")]
+        [Authorize]
         public async Task<IActionResult> UpdateBranch(int branchId, UpdateBranchDto updateBranchDto, CancellationToken cancellationToken)
         {
             var branch = await _branchRepository.GetBranchByIdAsync(branchId, cancellationToken);
@@ -99,6 +104,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpDelete("{branchId:int}")]
+        [Authorize]
         public async Task<IActionResult> DeleteBranch(int branchId, CancellationToken cancellationToken)
         {
             var branch = await _branchRepository.GetBranchByIdAsync(branchId, cancellationToken);

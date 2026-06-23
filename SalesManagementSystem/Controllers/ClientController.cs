@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SalesManagementSystem.Dtos.ClientDtos;
 using SalesManagementSystem.Helpers;
 using SalesManagementSystem.Interfaces;
@@ -20,6 +21,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllClients([FromQuery] QueryObject queryObject, CancellationToken cancellationToken)
         {
             var clientList = await _clientRepository.GetAllClientsAsync(queryObject, cancellationToken);
@@ -29,6 +31,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet("{clientId:int}")]
+        [Authorize]
         public async Task<IActionResult> GetClient(int clientId, CancellationToken cancellationToken)
         {
             var client = await _clientRepository.GetClientByIdAsync(clientId, cancellationToken);
@@ -45,6 +48,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddClient(CreateClientDto createClientDto, CancellationToken cancellationToken)
         {
             var client = createClientDto.ToClientFromCreateClientDto();
@@ -59,6 +63,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpPut("{clientId:int}")]
+        [Authorize]
         public async Task<IActionResult> UpdateClient(int clientId, UpdateClientDto updateClientDto, CancellationToken cancellationToken)
         {
             var client = await _clientRepository.GetClientByIdAsync(clientId, cancellationToken);
@@ -78,6 +83,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpDelete("{clientId:int}")]
+        [Authorize]
         public async Task<IActionResult> DeleteClient(int clientId, CancellationToken cancellationToken)
         {
             var client = await _clientRepository.GetClientByIdAsync(clientId, cancellationToken);

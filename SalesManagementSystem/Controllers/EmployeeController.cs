@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SalesManagementSystem.Dtos.BranchDtos;
 using SalesManagementSystem.Dtos.EmployeeDtos;
 using SalesManagementSystem.Helpers;
@@ -21,6 +22,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllEmployees([FromQuery] QueryObject query, CancellationToken cancellationToken)
         {
             var employeeList = await _employeeRepository.GetAllEmployeeAsync(query, cancellationToken);
@@ -30,6 +32,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpGet("{employeeId:int}")]
+        [Authorize]
         public async Task<IActionResult> GetEmployeeById(int employeeId, CancellationToken cancellationToken)
         {
             var employee = await _employeeRepository.GetEmployeeByIdAsync(employeeId, cancellationToken);
@@ -38,10 +41,12 @@ namespace SalesManagementSystem.Controllers
                 return NotFound("Employee ID does not exist!");
             }
             DetailedInfoEmployeeDto employeeDto = employee.ToDetailedInfoEmployeeDto();
+
             return Ok(employeeDto);
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddEmployee(CreateEmployeeDto employeeDto)
         {
             if (employeeDto.SuperId != null)
@@ -77,6 +82,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpPut("{employeeId:int}")]
+        [Authorize]
         public async Task<IActionResult> UpdateEmployee(int employeeId, UpdateEmployeeDto employeeDto)
         {
             var employee = await _employeeRepository.GetEmployeeByIdAsync(employeeId);
@@ -115,6 +121,7 @@ namespace SalesManagementSystem.Controllers
         }
 
         [HttpDelete("{employeeId:int}")]
+        [Authorize]
         public async Task<IActionResult> DeleteEmployee(int employeeId)
         {
             var employee = await _employeeRepository.GetEmployeeByIdAsync(employeeId);
