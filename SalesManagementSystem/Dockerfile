@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-COPY *.csproj ./ # Copy the project file first to leverage Docker cache
+COPY SalesManagementSystem.csproj ./
 RUN dotnet restore
 COPY . ./
 RUN dotnet publish -c Release -o /app/publish

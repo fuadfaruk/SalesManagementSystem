@@ -132,7 +132,6 @@ builder.Services.AddScoped<IWorksWithRepository, WorksWithRepository>();
 
 builder.Services.AddSingleton<ITokenService, TokenService>();
 
-
 var app = builder.Build();
 
 if(app.Environment.IsDevelopment())

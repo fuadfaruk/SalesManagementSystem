@@ -18,7 +18,6 @@ namespace SalesManagementSystem.Data
         public DbSet<WorksWith> WorksWiths { get; set; }
         public DbSet<Transaction> TransactionHistories { get; set; }
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -60,5 +59,4 @@ namespace SalesManagementSystem.Data
             modelBuilder.Entity<IdentityRole>().HasData(roles);
         }
     }
-
-    }
+}

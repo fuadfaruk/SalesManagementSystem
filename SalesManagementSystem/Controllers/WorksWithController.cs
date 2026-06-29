@@ -96,6 +96,5 @@ namespace SalesManagementSystem.Controllers
 
             return Ok("Transaction was added/updated successfully!");
         }
-
     }
 }
