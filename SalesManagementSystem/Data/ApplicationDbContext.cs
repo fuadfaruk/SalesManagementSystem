@@ -17,6 +17,7 @@ namespace SalesManagementSystem.Data
         public DbSet<Client> Clients { get; set; }
         public DbSet<WorksWith> WorksWiths { get; set; }
         public DbSet<Transaction> TransactionHistories { get; set; }
+        public DbSet<BranchSupplier> BranchSuppliers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

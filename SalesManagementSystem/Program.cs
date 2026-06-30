@@ -129,6 +129,7 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IBranchRepository, BranchRepository>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IWorksWithRepository, WorksWithRepository>();
+builder.Services.AddScoped<IBranchSupplierRepository, BranchSupplierRepository>();
 
 builder.Services.AddSingleton<ITokenService, TokenService>();
 
